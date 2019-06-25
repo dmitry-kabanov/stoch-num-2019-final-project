@@ -240,3 +240,10 @@ TSWLatexianTemp*
 
 # generated if using elsarticle.cls
 *.spl
+
+# Local environment for zsh.
+autoenv-enter.zsh
+autoenv-leave.zsh
+
+# macOS specific files.
+.DS_Store
