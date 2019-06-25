@@ -1,0 +1,57 @@
+\documentclass[a4paper, 12pt, english, parskip]{scrartcl}
+\usepackage{amsmath}
+\usepackage{fourier}
+
+\title{\vspace{-0.5cm}Parameter estimation\\of partial differential equations\\via neural networks}
+\author{Alexander Glushko, Dmitry I.\ Kabanov}
+\date{23 June 2019}
+
+\newcommand{\Data}{\{D_i\}}
+\newcommand{\MSE}{\ensuremath{\text{MSE}}}
+\newcommand{\T}{\ensuremath{\text{T}}}
+
+\begin{document}
+\maketitle
+
+We are interested in applying neural networks to the problem of parameter
+estimation of partial differential equations from given observations.
+Precisely, we are given data $\Data = \{t_i, x_i, u_i\}$,\(i=1,\dots,N\) that are
+observed from the solution of partial differential equation of the form:
+\begin{equation}
+    u_t + \mathcal N(u) = 0,
+\end{equation}
+where  \(u=u(t, x)\) is the solution of the equation, subscript \(t\) denotes
+differentiation with respect to time, \(\mathcal N(u; \lambda)\) is a nonlinear
+algebraic-differential operator, \(\lambda\) is a vector of parameters. The goal
+is to estimate \(\lambda\) from the observations \(\Data\) via simultaneous
+training of neural networks \(u(x, t)\) and
+\begin{equation}
+    f(t, x; \lambda) = u_t + \mathcal N(u)
+\end{equation}
+via training procedure defined by minimizing the mean square error (MSE)
+\begin{equation}
+    \MSE = \MSE_u + \MSE_f,
+\end{equation}
+where
+\begin{equation}
+    \MSE_u = \frac{1}{N}
+        \sum_{i=1}^{N} \left[ u\left(t_i, x_i\right) - u_i \right]^2, \quad
+    \MSE_f = \frac{1}{N} \sum_{i=1}^N \left[f \left(t_i, x_i \right) \right]^2.
+\end{equation}
+
+As a concrete example, we consider linear heat equation
+\begin{equation}
+    u_t - \lambda u_{xx} - g(t, x) = 0
+\end{equation}
+with one scalar sought-for parameter \(\lambda\) and given source function
+\(g(t, x) \).
+
+As a more difficult example, we consider viscous Burgers’ equation    
+\begin{equation}
+    u_t + \lambda_1 u u_x - \lambda_2 u_{xx} = 0, \quad x\in[-1; 1], t\in[0, 1]
+\end{equation}
+with sought-for parameter \(\lambda = \left( \lambda_1, \lambda_2 \right)^\T \).
+This equation is nonlinear and serves as a prototype of the governing
+equations of fluid dynamics. It is known that the solutions of this equation
+may develop sharp gradients in finite time even for smooth initial condition.
+\end{document}
