@@ -6,38 +6,126 @@
 \author{Alexander Glushko, Dmitry I.\ Kabanov}
 \date{23 June 2019}
 
-\newcommand{\Data}{\{D_i\}}
+\newcommand{\Data}{\vec{D}}
+\newcommand{\DataExt}{\widetilde{\vec{D}}}
 \newcommand{\MSE}{\ensuremath{\text{MSE}}}
 \newcommand{\T}{\ensuremath{\text{T}}}
-
+\renewcommand{\vec}[1]{\boldsymbol{#1}}
+\newcommand{\VTheta}{\ensuremath{\vec{\theta}}}
+\newcommand{\VLambda}{\ensuremath{\vec{\lambda}}}
 \begin{document}
 \maketitle
 
 We are interested in applying neural networks to the problem of parameter
 estimation of partial differential equations from given observations.
-Precisely, we are given data $\Data = \{t_i, x_i, u_i\}$,\(i=1,\dots,N\) that are
+Precisely, we are given data $\Data = \{t_i, x_i, u_i\}$, \(i=1,\dots,N\), that are
 observed from the solution of partial differential equation of the form:
 \begin{equation}
-    u_t + \mathcal N(u) = 0,
+    u_t + \mathcal N(u; \vec{\lambda}) = 0,
 \end{equation}
-where  \(u=u(t, x)\) is the solution of the equation, subscript \(t\) denotes
-differentiation with respect to time, \(\mathcal N(u; \lambda)\) is a nonlinear
-algebraic-differential operator, \(\lambda\) is a vector of parameters. The goal
-is to estimate \(\lambda\) from the observations \(\Data\) via simultaneous
-training of neural networks \(u(x, t)\) and
+where  \(u=u(x, t)\) is the solution of the equation,
+\(\mathcal N(u; \VLambda)\) is a nonlinear algebraic-differential operator,
+\(\vec{\lambda}\) is a vector of parameters.
+Here and below, subscript \(t\) denotes differentiation with respect to time.
+The goal is to estimate \(\VLambda\) from the observations \(\Data\).
+We follow an approach proposed in \cite{raissi2017pinnII}.
+Given observations, we train a feedforward neural network \cite{goodfellow2016deep}
 \begin{equation}
-    f(t, x; \lambda) = u_t + \mathcal N(u)
+u(x, t; \vec{\theta}) = g_L \circ g_{L-1} \circ \dots \circ g_1,
 \end{equation}
-via training procedure defined by minimizing the mean square error (MSE)
+where \( \vec{\theta} = \left( W_1, b_1, \dots, W_L, b_L\right)^\T \) and
+\[
+    g_\ell(z; \VTheta_\ell) = \sigma (W_\ell z + b_\ell), \quad \ell = 1,\dots,L,
+\]
+with \(\sigma\) being a so-called activation function, which must be nonlinear
+and is applied componentwise. In this work, we plan to use \( \sigma(z) = \tanh
+(z) \). The hyperparameters, $L$ (the number of the layers) and the width of each
+layer, are to be determined later during the course of the project.
+Neural network \(u(x, t; \VTheta)\) is trained along with the derived neural
+network
 \begin{equation}
-    \MSE = \MSE_u + \MSE_f,
+    f(x, t; \lambda) = u_t + \mathcal N(u; \VLambda),
+\end{equation}
+which captures information about the observations.
+
+The training procedure defined as follows.
+We assume that the observed data are
+\begin{equation}
+    u_i = u(x_i, t_i; \theta) + \epsilon_i, \quad i=1,\dots,N.
+\end{equation}
+Additionally, we assume that along with each datum $u_i$ we also observe
+\begin{equation}
+    f_i = f(x_i, t_i; \VLambda) + \delta_i, \quad i=1, \dots, N,
 \end{equation}
 where
 \begin{equation}
-    \MSE_u = \frac{1}{N}
-        \sum_{i=1}^{N} \left[ u\left(t_i, x_i\right) - u_i \right]^2, \quad
-    \MSE_f = \frac{1}{N} \sum_{i=1}^N \left[f \left(t_i, x_i \right) \right]^2.
+    f(x_i, t_i; \VLambda) = u_t + \mathcal N(u(x_i, t_i)); \VLambda) = 0, \quad
+    i = 1,\dots,N.
 \end{equation}
+We denote these extended observations by $\DataExt$.
+
+By Bayes' rule the optimal values of $\vec{\theta}$ and $\vec{\lambda}$
+are found through maximization of the posterior distribution
+\begin{equation}
+    \rho( \VTheta, \VLambda | \DataExt ) \propto
+    \rho( \DataExt | \VTheta, \VLambda ) \times
+    \rho( \VTheta, \VLambda ).
+\end{equation}
+
+We assume that all observations are independent from each other and that $u_i$
+and $f_i$, $i=1,\dots,N$, are independent as well and that the observations
+are Gaussian processes:
+\begin{align}
+    \rho(u_1,\dots,u_N | \VTheta, \sigma) &\propto \frac{1}{\sigma^N}
+    \exp \left(
+        -\frac{\sum_{i=1}^N\left(u_i-u(x_i,t_i; \VTheta)\right)^2}{2\sigma^2}
+    \right) \\
+    \rho(f_1,\dots,f_N | \vec{\lambda}, \tau) &\propto \frac{1}{\tau^N}
+    \exp \left(
+        - \frac{\sum_{i=1}^N f(x_i, t_i; \VLambda)^2}{2\tau^2}
+    \right),
+\end{align}
+and assigning Jeffrey's priors for $\sigma$ and $\tau$, we obtain that
+\begin{equation}
+    \rho(\tilde{\vec{D}} | \VTheta, \VLambda) \propto
+    \left( \sum_{i=1}^N (u_i - u(x_i, t_i; \VTheta))^2 \right)^{-N/2} \times
+    \left( \sum_{i=1}^N (f(x_i, t_i; \VLambda))^2 \right)^{-N/2}.
+\end{equation}
+Moreover, we assume improper flat prior distribution:
+\begin{equation}
+    \rho(\vec{\theta}, \vec{\lambda}) = \text{const} \text{ for all }
+    \vec{\theta} \text{ and } \vec{\lambda}.
+\end{equation}
+
+Using the above, the maximization of the posterior distribution is equivalent to
+the minimization of the log-likelihood function
+\begin{equation}
+    \mathcal L = \text{const}
+    -\frac{N}{2} \log \sum_{i=1}^{N} \left[u_i - u(x_i, t_i; \VTheta)\right]^2 
+    -\frac{N}{2} \log \sum_{i=1}^{N} \left[f(x_i, t_i; \VLambda)\right]^2,
+\end{equation}
+the minimum of which yields the optimal values of $\VTheta$ and
+$\VLambda$.
+
+Training of neural networks in \cite{raissi2017pinnII} lacks uncertainty
+quantification for the found parameters. In this work we apply bootstrap
+procedure \cite{Wasserman2004} quantify the uncertainty by providing confidence
+sets for $\VLambda$.
+
+% Assuming that the noise between the observations and the model is Gaussian and
+% independent for each observation and assuming no prior information on the
+% parameters \(\vec{\theta}\) and \(\lambda\), the training procedure is defined by
+% minimizing the mean square error (MSE)
+% \begin{equation}
+%     \MSE = \MSE_u + \MSE_f,
+% \end{equation}
+% where
+% \begin{equation}
+%     \MSE_u = \frac{1}{N}
+%         \sum_{i=1}^{N} \left[ u\left(t_i, x_i\right) - u_i \right]^2, \quad
+%     \MSE_f = \frac{1}{N} \sum_{i=1}^N \left[f \left(t_i, x_i \right) \right]^2,
+% \end{equation}
+% which is a maximum likelihood estimation procedure.
 
 As a concrete example, we consider linear heat equation
 \begin{equation}
@@ -50,8 +138,11 @@ As a more difficult example, we consider viscous Burgers’ equation
 \begin{equation}
     u_t + \lambda_1 u u_x - \lambda_2 u_{xx} = 0, \quad x\in[-1; 1], t\in[0, 1]
 \end{equation}
-with sought-for parameter \(\lambda = \left( \lambda_1, \lambda_2 \right)^\T \).
+with sought-for parameter \( \VLambda = \left( \lambda_1, \lambda_2 \right)^\T \).
 This equation is nonlinear and serves as a prototype of the governing
 equations of fluid dynamics. It is known that the solutions of this equation
 may develop sharp gradients in finite time even for smooth initial condition.
+
+\bibliography{scope}
+\bibliographystyle{abbrv}
 \end{document}
