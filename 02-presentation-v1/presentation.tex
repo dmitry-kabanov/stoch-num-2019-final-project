@@ -1,4 +1,4 @@
-\documentclass[]{beamer}
+\documentclass{beamer}
 \usepackage{amsmath}
 \usepackage{fourier}
 \usetheme{metropolis}
@@ -7,20 +7,56 @@
 \author{Alexander Glushko, Dmitry I.\ Kabanov}
 \date{Final project on the Stochastic Numerics course\\Once upon a time in 2019}
 
-\newcommand{\Data}{\{D_i\}}
+\newcommand{\Data}{\vec{D}}
+\newcommand{\DataExt}{\widetilde{\vec{D}}}
 \newcommand{\MSE}{\ensuremath{\text{MSE}}}
 \newcommand{\T}{\ensuremath{\text{T}}}
 \renewcommand{\vec}[1]{\boldsymbol{#1}}
+\newcommand{\VTheta}{\ensuremath{\vec{\theta}}}
+\newcommand{\VLambda}{\ensuremath{\vec{\lambda}}}
+\DeclareMathOperator*{\argmin}{arg\,min}
+\newcommand{\R}{\mathbb R}
+\newcommand{\UNN}[1][\text{NN}]{u_{#1}}
+\newcommand{\FNN}[1][\text{NN}]{f_{#1}}
+\newcommand{\NonlinOp}{\mathcal N\!}
 
 \begin{document}
 \maketitle
 
+% ------------------------------------------------------------------------------
+% Common part
 \begin{frame}{Outline}
 \begin{itemize}
     \item Introduction to the problem of parameter estimation of PDEs
     \item Solution set up
     \item Description of neural networks
+\end{itemize}
 \end{frame}
+
+% Common part (end)
+% ------------------------------------------------------------------------------
+
+
+% ------------------------------------------------------------------------------
+% Heat equation part
+
+
+
+% Heat equation part (end)
+% ------------------------------------------------------------------------------
+
+% ------------------------------------------------------------------------------
+% Burgers' equation
+
+
+% Burgers' equation (end)
+% ------------------------------------------------------------------------------
+
+\begin{frame}
+    \frametitle{Conclusions}
+
+\end{frame}
+
 
 \bibliography{presentation}
 \bibliographystyle{abbrv}
