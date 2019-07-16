@@ -41,7 +41,7 @@ where  $u=u(x, t)$ is the solution of the equation,
 $\NonlinOp(u; \VLambda)$ a nonlinear algebraic-differential operator,
 $\VLambda$ the vector of unknown parameters, subscript $t$ denotes
 differentiation with respect to time.
-Solution $u(x,t)$ is given on the subset of $\R \times \R$ and the collected
+The solution $u(x,t)$ is given on the subset of $\R \times \R$ and the collected
 observations are distributed uniformly on this subset.
 The goal is to estimate $\VLambda$ from the observations $\Data$.
 
@@ -77,8 +77,12 @@ optimization problem
 \begin{equation}
     \label{eq:optim-ideal}
     \argmin_{\VLambda} \quad 
-    -\frac{N}{2} \log \sum_{i=1}^{N} \big[ u_i - u(x_i, t_i; \VLambda) \big]^2.
+    \log \sum_{i=1}^{N} \big[ u_i - u(x_i, t_i; \VLambda) \big]^2,
 \end{equation}
+where we marginalized the likelihood treating noise variance $\sigma^2$ as a~
+nuisance parameter~\cite[section~8.2]{sivia2006data}. In the following we omit
+$\log$ function as its monotonic and we are interested in the optimal value of
+$\VLambda$, not the value of the objective function.
 
 Solution of the optimization problem~\eqref{eq:optim-ideal} requires multiple
 solutions of Eq.~\eqref{eq:pde}, which can be expensive.
@@ -115,7 +119,7 @@ $\VLambda$ as the following constrained optimization problem:
 \begin{subequations}
 \label{eq:optim}
 \begin{align}
-    &\argmin_{\VLambda, \VTheta} \quad \ \ -\frac{N}{2} \log
+    &\argmin_{\VLambda, \VTheta} \quad \ \ 
         \sum_{i=1}^N \big[u_i - \UNN(x_i, t_i; \VTheta)\big]^2  \\
     &\text{subject to } \ \ \UNN[\text{NN}, t]  + \NonlinOp(\UNN; \VLambda) = 0.
 \end{align}
@@ -136,12 +140,15 @@ found) from the observations $\Data$ via the relaxed version of the optimization
 problem~\eqref{eq:optim}:
 \begin{equation}
     \argmin_{\VLambda, \VTheta}
-    -\frac N 2 \log \sum_{i=1}^N \big[ u_i - \UNN(x_i, t_i; \VTheta)\big ]^2
-    -\gamma \frac N 2 \log \sum_{i=1}^N \big[ \FNN(x_i, t_i; \VLambda, \VTheta) \big]^2,
+    \sum_{i=1}^N \big[ u_i - \UNN(x_i, t_i; \VTheta)\big ]^2
+    +\gamma \sum_{i=1}^N \big[ \FNN(x_i, t_i; \VLambda, \VTheta) \big]^2,
 \end{equation}
 where $\gamma$ is an extra hyperparameter that controls the importance of the
 penalty term.
 This parameter is chosen via cross-validation.
+We assume that the number of observations $N$ is fixed (not controlled by us)
+and we choose the size of the network empirically by varying its depth until
+satisfying agreement is found.
 
 %We assume that all observations are independent from each other and that $u_i$
 %and $f_i$, $i=1,\dots,N$, are independent as well and that the observations
