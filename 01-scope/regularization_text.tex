@@ -1,0 +1,131 @@
+\documentclass[a4paper, 12pt, english, parskip]{scrartcl}
+\usepackage{amsmath}
+\usepackage{fourier}
+
+\title{\vspace{-0.5cm}Regularization\\of neural networks\\via Bayes' rule [1]}
+\author{Alexander Glushko, Dmitry I.\ Kabanov}
+\date{16 July 2019}
+
+\newcommand{\Data}{\vec{D}}
+\newcommand{\DataExt}{\widetilde{\vec{D}}}
+\newcommand{\MSE}{\ensuremath{\text{MSE}}}
+\newcommand{\T}{\ensuremath{\text{T}}}
+\renewcommand{\vec}[1]{\boldsymbol{#1}}
+\newcommand{\VTheta}{\ensuremath{\vec{\theta}}}
+\newcommand{\VLambda}{\ensuremath{\vec{\lambda}}}
+\begin{document}
+\maketitle
+
+In this section we discuss one of the methods to improve our neural network result.
+For improving generalization of the neural network, we use regularization. For this we need to recall the general form of the loss function: 
+\begin{equation}
+F(\boldsymbol{x}) = E_D = \sum_{q = 1}^Q (\boldsymbol{t}_q - \boldsymbol{a}_q)^T(\boldsymbol{t}_q - \boldsymbol{a}_q),
+\end{equation}
+where $\boldsymbol{a}_q$ is the network output for input $\boldsymbol{p}_q,$ and target output 
+\begin{equation}
+\boldsymbol{t}_q = \boldsymbol{g(p)}_q + \varepsilon_q,
+\end{equation}
+where $g(.)$ is some unknown function, and $\varepsilon_q$ is a random, independent and zero mean noise.
+
+For this method, we modify the sum squared error performance index of Eq.(1) to include a term that penalizes network complexity. This concept was introduced by Tikhonov [2]. He added a penalty, or regularization, term that involved the derivatives of the approximating function (neural network in our case), which forced the resulting function to be smooth. Under certain conditions, this regularization term can be written as the sum of squares of the network weights, as in
+\begin{equation}
+F(\boldsymbol{x}) = \beta E_D + \alpha E_W = \beta \sum_{q = 1}^Q (\boldsymbol{t}_q - \boldsymbol{a}_q)^T(\boldsymbol{t}_q - \boldsymbol{a}_q) + \alpha \sum_{i = 1}^n x_i^2,
+\end{equation}
+where the ratio $\alpha / \beta$ controls the effective complexity of the network solution. The larger the ratio is, the smoother the network response.
+
+Why do we want to penalize the sum squared weight? When the
+weights are large, the function created by the network can have large slopes, and is therefore more likely to overfit the training data. If we restrict the weights to be small, then the network function will create a smooth interpolation through the training data. (add some picture to prove the words). The key to the success of the regularization method in producing a network that generalizes well is the correct choice of the regularization ratio $\alpha / \beta $.
+
+There are several techniques for setting the regularization parameter. One approach is called Bayesian regularization.
+
+\textbf{Bayesian Framework}
+
+The Bayesian framework begins with the assumption that the network weights are random variables. We then choose the weights that maximize the conditional probability of the weights given the data. Bayes' rule is used to find this probability function:
+\begin{equation}
+P(\boldsymbol{x} \vert D, \alpha, \beta, M) = \frac{P(D \vert \boldsymbol{x}, \beta, M) P(\boldsymbol{x} \vert \alpha, M)}{P(D \vert \alpha, \beta, M)},
+\end{equation}
+where $\boldsymbol{x}$ is the is the vector containing all of the weights and biases in the network, D represents the training data set, $\alpha$ and $\beta$ are parameters associated with the density functions $P(D \vert \boldsymbol{x}, \beta, M)$ and $P(\boldsymbol{x} \vert \alpha, M)$, and M is the selected model - the architecture of the network we have chosen (i.e., how many layers and how may neurons in each layer).
+
+Let's assume that the noise terms in Eq. (2) are independent and have a Gaussian distribution, then the \textit{likelihood function} is
+\begin{equation}
+P(D \vert \boldsymbol{x}, \beta, M) = \frac{exp(-\beta E_D)}{Z_D(\beta)},
+\end{equation}
+where $\beta = 1 / (2 \sigma_\varepsilon ^ 2 ), \sigma_\varepsilon ^2$ is the variance of each element of $\varepsilon_q,~ E_D$ is the squared error, and 
+\begin{equation}
+    Z_D(\beta) = (2 \pi \sigma_\varepsilon ^2)^{N / 2} = (\pi / \beta)^{N / 2}
+\end{equation}
+The maximum likelihood method selects the weights so as to maximize the likelihood function, which in this Gaussian case is the same as minimizing the squared error $E_D$ . Therefore, our standard sum squared error performance index can be derived statistically with the assumption of Gaussian noise in the training set, and our standard choice for the weights is the maximum likelihood estimate.
+
+With the assumption that the weights are small values centered around zero, we can select a zero-mean Gaussian \textit{prior density}:
+\begin{equation}
+    P(\boldsymbol{x} \vert \alpha, M) = \frac{exp(-\alpha E_W)}{Z_W(\alpha)},
+\end{equation}
+where $\alpha = 1 / (2 \sigma_W ^ 2 ), ~\sigma_W ^2$ is the variance of each of the weights, $E_W$ is the sum squared weights, and 
+\begin{equation}
+    Z_W(\alpha) = (2 \pi \sigma_W ^2)^{n/2} = (\pi / \alpha)^{n / 2},
+\end{equation}
+where $n$ is the number of weights and biases in the network.
+
+With the Gaussian assumptions that we made earlier, we can rewrite the posterior density, using Eq. (4), in the following form:
+\begin{equation}
+    P(\boldsymbol{x} \vert D, \alpha, \beta, M) = \frac{\frac{1}{Z_W(\alpha)}\frac{1}{Z_D(\beta)}exp(-(\beta E_D + \alpha E_W))}{\text{Normalization factor}} = \frac{1}{Z_F(\alpha, \beta)}exp(-F(\boldsymbol{x}))
+\end{equation}
+To find the most probable value for the weights, we should maximize the posterior density $P(\boldsymbol{x} \vert D, \alpha, \beta, M)$. This is equivalent to minimizing the regularized performance index $F(\boldsymbol{x})$.
+
+We will identify the weights that maximize the posterior density as $\boldsymbol{x}^{MP}$ , or most probable. This is to be contrasted with the weights that maximize the likelihood function: $\boldsymbol{x}^{ML}$ .
+The parameter $\beta$ is inversely proportional to the variance in the measurement noise $\varepsilon_q$. Therefore, if the noise variance is large, $\beta$ will be small, and the regularization ratio $\alpha / \beta $ will be large. This will force the resulting weights to be small and the network function to be smooth.
+
+The parameter $\alpha$ is inversely proportional to the variance in the prior distribution for the network weights. If this variance is large, it means that we have very little certainty about the values of the network weights, and, therefore, they might be very large. The parameter will then be small, and the regularization ratio $\alpha / \beta $ will also be small. This will allow the network weights to be large, and the network function will be allowed to have more variation. 
+
+\textbf{Parameters $\alpha$ and $\beta$ estimation}
+
+If we want to estimate $\alpha$ and $\beta$ using Bayesian analysis, we need the probability density $P(\alpha, \beta \vert D, M)$. Using Bayes' rule this can be written
+\begin{equation}
+    P(\alpha, \beta \vert D, M) = \frac{P(D \vert \alpha, \beta, M) P(\alpha, \beta \vert M)}{P(D \vert M)}
+\end{equation}
+If we assume a uniform (constant) prior density $P(\alpha, \beta \vert M)$ for the regularization parameters $\alpha$ and $\beta$ , then maximizing the posterior is achieved by maximizing the likelihood function $P(D \vert \alpha, \beta, M)$ However, this likelihood function is the normalization factor (evidence) from Eq. (4). Since we have assumed that all probabilities have a Gaussian form, we know the form for the posterior density of Eq. (4). It is shown in Eq. (9). Now we can solve Eq. (4) for the normalization factor (evidence).
+\begin{equation}
+    P(D \vert \alpha, \beta, M) = \frac{P(D \vert \boldsymbol{x}, \beta, M) P(\boldsymbol{x} \vert \alpha, M)}{P(\boldsymbol{x} \vert D, \alpha, \beta, M)} = \frac{\left[\frac{exp(-\beta E_D)}{Z_D(\beta)}\right] \left[\frac{exp(-\alpha E_W)}{Z_W(\alpha)}\right]}{\frac{1}{Z_F(\alpha, \beta)}exp(-F(\boldsymbol{x}))} = \frac{Z_F (\alpha, \beta)}{Z_D(\beta) Z_W(\alpha)}
+\end{equation}
+The only part we don't know is $Z_F(\alpha, \beta).$ However, we can estimate it by using a Taylor expansion.
+
+Since the objective function has the shape of a quadratic in a small area surrounding a minimum point, we can expand $F(\boldsymbol{x})$ in a second order Taylor series around its minimum point, $\boldsymbol{x}^{MP}$ , where the gradient is zero:
+\begin{equation}
+    F(\boldsymbol{x}) \approx F(\boldsymbol{x}^{MP}) + \frac{1}{2}(\boldsymbol{x} - \boldsymbol{x}^{MP})^T\boldsymbol{H}^{MP}(\boldsymbol{x}-\boldsymbol{x}^{MP})
+\end{equation}
+where $\boldsymbol{H} = \beta \nabla^2 E_D + \alpha \nabla^2 E_W$ is the Hessian matrix of $F(\boldsymbol{x}),$ and $\boldsymbol{H}^MP$ is the Hessian evaluated at $\boldsymbol{x}^{MP}.$ After the substitution (12) into (9), we have:
+\begin{equation}
+    P(\boldsymbol{x} \vert D, \alpha, \beta, M) \approx \left\{\frac{1}{Z_F}exp(-F(\boldsymbol{x}^{MP}))\right\}exp\left[ -\frac{1}{2}(\boldsymbol{x} - \boldsymbol{x}^{MP})^T\boldsymbol{H}^{MP}(\boldsymbol{x}-\boldsymbol{x}^{MP})\right]
+\end{equation}
+The standard form of the Gaussian density is
+\begin{equation}
+    P(\boldsymbol{x} ) = \frac{1}{\sqrt{(2\pi)^n \vert (\boldsymbol{H}^{MP})^{-1} \vert}}exp\left( -\frac{1}{2}(\boldsymbol{x} - \boldsymbol{x}^{MP})^T\boldsymbol{H}^{MP}(\boldsymbol{x}-\boldsymbol{x}^{MP})\right)
+\end{equation}
+Therefore, equating (13) with (14), we can solve for $Z_F(\alpha, \beta)$:
+\begin{equation}
+    Z_F(\alpha, \beta) \approx (2\pi)^{n/ 2}(det((\boldsymbol{H}^{MP})^{-1}))^{1/2}exp(-F(\boldsymbol{x}^{MP}))
+\end{equation}
+Placing this result into (11), taking the derivative with respect to each of the parameters $\alpha$ and $\beta$ of the log of Eq. (11) and setting them equal to zero, we get the optimal values:
+\begin{equation}
+    \alpha^{MP} = \frac{\gamma}{2E_W(\boldsymbol{x}^{MP})} \text{and} \beta^{MP} = \frac{N - \gamma}{2E_D(\boldsymbol{x}^{MP})},
+\end{equation}
+where $\gamma = n - 2\alpha{MP} tr(\boldsymbol{H}^MP)^{-1}$ is called the \textit{the effective number of parameters}(weights and biases), and $n$ is the total number of parameters in the network.
+
+\textbf{Bayesian Regularization Algorithm}
+
+Here are the steps required for Bayesian optimization of the regularization parameters, with the Gauss-Newton approximation to the Hessian matrix:
+
+\begin{itemize}
+    \item 1) Initialize $\alpha, \beta$ and the weights. The weights are initialized randomly, and then $E_D$ and $E_W$ are computed. Set $\gamma = n$, and compute $\alpha$ and $\beta$ using Eq. (16).
+    
+    \item 2) Take one step of the Levenberg-Marquardt algorithm toward minimizing the objective function $F(\boldsymbol{x}) = \beta E_D + \alpha E_W$.
+    
+    \item 3) Compute the effective number of parameters $\gamma = n - 2\alpha tr(\boldsymbol{H}^{-1})$, making use of the Gauss-Newton approximation to the Hessian available in the Levenberg-Marquardt training algorithm [1]
+    
+    \item 4) Compute new estimates for the regularization parameters using the Eq. (16)
+    
+    \item 5) iterate over the previous 1) - 4) steps until convergence.
+    
+\end{itemize}
+
+\end{document}
