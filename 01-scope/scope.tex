@@ -1,10 +1,12 @@
-\documentclass[a4paper, 12pt, english, parskip]{scrartcl}
+\documentclass[a4paper, 12pt, parskip]{scrartcl}
 \usepackage{amsmath}
 \usepackage{fourier}
+\usepackage{nth}
 
-\title{\vspace{-0.5cm}Parameter estimation\\of partial differential equations\\via neural networks}
+\title{\vspace{-0.5cm}Parameter estimation\\of partial differential
+        equations\\via neural networks}
 \author{Alexander Glushko, Dmitry I.\ Kabanov}
-\date{23 June 2019}
+%\date{23 June 2019}
 
 \newcommand{\Data}{\vec{D}}
 \newcommand{\DataExt}{\widetilde{\vec{D}}}
@@ -13,104 +15,166 @@
 \renewcommand{\vec}[1]{\boldsymbol{#1}}
 \newcommand{\VTheta}{\ensuremath{\vec{\theta}}}
 \newcommand{\VLambda}{\ensuremath{\vec{\lambda}}}
+\DeclareMathOperator*{\argmin}{arg\,min}
+\newcommand{\R}{\mathbb R}
+\newcommand{\UNN}[1][\text{NN}]{u_{#1}}
+\newcommand{\FNN}[1][\text{NN}]{f_{#1}}
+\newcommand{\NonlinOp}{\mathcal N\!}
+
 \begin{document}
 \maketitle
 
-We are interested in applying neural networks to the problem of parameter
-estimation of partial differential equations from given observations.
-Precisely, we are given data $\Data = \{t_i, x_i, u_i\}$, \(i=1,\dots,N\), that are
-observed from the solution of partial differential equation of the form:
+In this work, we partially reproduce and extend the work of Raissi, Perdikaris,
+and Karniadakis~\cite{raissi2017pinnII} on applying neural networks to the
+problem of parameter estimation of partial differential equations from given
+observations.
+
+\textbf{Problem setup}
+
+We are given data $\Data = \{t_i, x_i, u_i\}$, $i=1, \dots, N$, that
+are observed from the solution of partial differential equation of the form
 \begin{equation}
-    u_t + \mathcal N(u; \vec{\lambda}) = 0,
+    \label{eq:pde}
+    u_t + \mathcal N\!(u; \VLambda) = 0,
 \end{equation}
-where  \(u=u(x, t)\) is the solution of the equation,
-\(\mathcal N(u; \VLambda)\) is a nonlinear algebraic-differential operator,
-\(\vec{\lambda}\) is a vector of parameters.
-Here and below, subscript \(t\) denotes differentiation with respect to time.
-The goal is to estimate \(\VLambda\) from the observations \(\Data\).
-We follow an approach proposed in \cite{raissi2017pinnII}.
-Given observations, we train a feedforward neural network \cite{goodfellow2016deep}
+where  $u=u(x, t)$ is the solution of the equation,
+$\NonlinOp(u; \VLambda)$ a nonlinear algebraic-differential operator,
+$\VLambda$ the vector of unknown parameters, subscript $t$ denotes
+differentiation with respect to time.
+Solution $u(x,t)$ is given on the subset of $\R \times \R$ and the collected
+observations are distributed uniformly on this subset.
+The goal is to estimate $\VLambda$ from the observations $\Data$.
+
+By Bayes' rule, the optimal value of $\VLambda$ is found through
+maximization of the posterior distribution \cite{sivia2006data}
 \begin{equation}
-u(x, t; \vec{\theta}) = g_L \circ g_{L-1} \circ \dots \circ g_1,
+    \rho( \VLambda | \Data ) \propto
+    \rho( \Data | \VLambda ) \times \rho( \VLambda ).
 \end{equation}
-where \( \vec{\theta} = \left( W_1, b_1, \dots, W_L, b_L\right)^\T \) and
+
+We assume that the observed data are given by the exact solution plus some
+additive uncorrelated Gaussian noise
+\begin{equation}
+    u_i = u(x_i, t_i; \VLambda) + \epsilon_i, \quad i=1, \dots, N,
+\end{equation}
+where $\epsilon_i \sim N(0, \sigma^2)$, and we emphasize dependence of the exact
+solution $u(x, t; \VLambda)$ on the parameter vector $\VLambda$.
+%\begin{align}
+%    \rho(u_1,\dots,u_N | \VTheta, \sigma) &\propto \frac{1}{\sigma^N}
+%    \exp \left(
+%        -\frac{\sum_{i=1}^N\left(u_i-u(x_i,t_i; \VTheta)\right)^2}{2\sigma^2}
+%    \right). \\
+Furthermore, we assign uninformative prior for $\VLambda$
+\begin{equation}
+    \rho(\vec{\lambda}) = \text{const} \quad \text{ for all } \vec{\lambda},
+\end{equation}
+%We assume that all observations are independent from each other and that $u_i$
+%and $f_i$, $i=1,\dots,N$, are independent as well and that the observations
+%are Gaussian processes:
+so that, in principle,
+the problem of finding $\VLambda$ is a nonlinear unconstrained
+optimization problem
+\begin{equation}
+    \label{eq:optim-ideal}
+    \argmin_{\VLambda} \quad 
+    -\frac{N}{2} \log \sum_{i=1}^{N} \big[ u_i - u(x_i, t_i; \VLambda) \big]^2.
+\end{equation}
+
+Solution of the optimization problem~\eqref{eq:optim-ideal} requires multiple
+solutions of Eq.~\eqref{eq:pde}, which can be expensive.
+To alleviate this, we follow an approach proposed in \cite{raissi2017pinnII}.
+We replace the exact
+model $u(x_i, t_i; \VLambda)$ with a surrogate, where the surrogate model is a
+feedforward neural network \cite{goodfellow2016deep}
+\begin{equation}
+\UNN(x, t; \vec{\theta}) = g_L \circ g_{L-1} \circ \dots \circ g_1,
+\end{equation}
+where
 \[
     g_\ell(z; \VTheta_\ell) = \sigma (W_\ell z + b_\ell), \quad \ell = 1,\dots,L,
 \]
-with \(\sigma\) being a so-called activation function, which must be nonlinear
-and is applied componentwise. In this work, we plan to use \( \sigma(z) = \tanh
-(z) \). The hyperparameters, $L$ (the number of the layers) and the width of each
-layer, are to be determined later during the course of the project.
-Neural network \(u(x, t; \VTheta)\) is trained along with the derived neural
-network
-\begin{equation}
-    f(x, t; \lambda) = u_t + \mathcal N(u; \VLambda),
-\end{equation}
-which captures information about the observations.
+with $L$ is the number of layers in the network, with layers 0 and $L$ being
+input and output layers, respectively, and layers from 1 to $L-1$ being hidden
+layers, $\sigma$ being a nonlinear activation function applied
+componentwise. In this work, we plan to use \( \sigma(z) = \tanh (z) \).
+The neural-network parameter $\VTheta$ contains the components of matrices
+$W_\ell \in \R^{n_{\ell}\times n_{\ell-1}}$ and bias vectors
+$b_\ell \in \R^{n_\ell}$, where $n_\ell$ denotes the width of the
+$\ell$\textsuperscript{th} layer.
+The hyperparameters of the neural network, $L$ (the number of the layers) and
+the width of each layer, are to be determined later during the course of the
+project.
 
-The training procedure defined as follows.
-We assume that the observed data are
-\begin{equation}
-    u_i = u(x_i, t_i; \theta) + \epsilon_i, \quad i=1,\dots,N.
-\end{equation}
-Additionally, we assume that along with each datum $u_i$ we also observe
-\begin{equation}
-    f_i = f(x_i, t_i; \VLambda) + \delta_i, \quad i=1, \dots, N,
-\end{equation}
-where
-\begin{equation}
-    f(x_i, t_i; \VLambda) = u_t + \mathcal N(u(x_i, t_i)); \VLambda) = 0, \quad
-    i = 1,\dots,N.
-\end{equation}
-We denote these extended observations by $\DataExt$.
-
-By Bayes' rule the optimal values of $\vec{\theta}$ and $\vec{\lambda}$
-are found through maximization of the posterior distribution
-\begin{equation}
-    \rho( \VTheta, \VLambda | \DataExt ) \propto
-    \rho( \DataExt | \VTheta, \VLambda ) \times
-    \rho( \VTheta, \VLambda ).
-\end{equation}
-
-We assume that all observations are independent from each other and that $u_i$
-and $f_i$, $i=1,\dots,N$, are independent as well and that the observations
-are Gaussian processes:
+We assume that the discrepancy between the exact solution $u$ and the
+neural-network approximation $\UNN$ is a Gaussian noise, such that the
+likelihood function is not affected.
+Furthermore, to ensure that $\UNN( x, t; \VTheta)$
+is close to the exact solution of Eq.~\eqref{eq:pde}, we, strictly speaking,
+are supposed to formulate the problem of estimating of the unknown parameters
+$\VLambda$ as the following constrained optimization problem:
+\begin{subequations}
+\label{eq:optim}
 \begin{align}
-    \rho(u_1,\dots,u_N | \VTheta, \sigma) &\propto \frac{1}{\sigma^N}
-    \exp \left(
-        -\frac{\sum_{i=1}^N\left(u_i-u(x_i,t_i; \VTheta)\right)^2}{2\sigma^2}
-    \right) \\
-    \rho(f_1,\dots,f_N | \vec{\lambda}, \tau) &\propto \frac{1}{\tau^N}
-    \exp \left(
-        - \frac{\sum_{i=1}^N f(x_i, t_i; \VLambda)^2}{2\tau^2}
-    \right),
+    &\argmin_{\VLambda, \VTheta} \quad \ \ -\frac{N}{2} \log
+        \sum_{i=1}^N \big[u_i - \UNN(x_i, t_i; \VTheta)\big]^2  \\
+    &\text{subject to } \ \ \UNN[\text{NN}, t]  + \NonlinOp(\UNN; \VLambda) = 0.
 \end{align}
-and assigning Jeffrey's priors for $\sigma$ and $\tau$, we obtain that
+\end{subequations}
+However, the equality constraint is difficult to satisfy exactly as
+$u_{\text{NN}}$ is just an approximation of the exact solution of
+Eq.~\eqref{eq:pde}.
+Therefore, we relax the optimization problem in the following way.
+We introduce a secondary neural network
 \begin{equation}
-    \rho(\tilde{\vec{D}} | \VTheta, \VLambda) \propto
-    \left( \sum_{i=1}^N (u_i - u(x_i, t_i; \VTheta))^2 \right)^{-N/2} \times
-    \left( \sum_{i=1}^N (f(x_i, t_i; \VLambda))^2 \right)^{-N/2}.
+    \FNN(x, t; \VLambda, \VTheta) =
+        u_{\text{NN}, t} + \NonlinOp(u_{\text{NN}}; \VLambda),
 \end{equation}
-Moreover, we assume improper flat prior distribution:
+where we plug the neural network $\UNN$ into Eq.~\eqref{eq:pde} and
+require that $\FNN \approx 0$.
+Then both networks are trained simultaneously (that is, their parameters are
+found) from the observations $\Data$ via the relaxed version of the optimization
+problem~\eqref{eq:optim}:
 \begin{equation}
-    \rho(\vec{\theta}, \vec{\lambda}) = \text{const} \text{ for all }
-    \vec{\theta} \text{ and } \vec{\lambda}.
+    \argmin_{\VLambda, \VTheta}
+    -\frac N 2 \log \sum_{i=1}^N \big[ u_i - \UNN(x_i, t_i; \VTheta)\big ]^2
+    -\gamma \frac N 2 \log \sum_{i=1}^N \big[ \FNN(x_i, t_i; \VLambda, \VTheta) \big]^2,
 \end{equation}
+where $\gamma$ is an extra hyperparameter that controls the importance of the
+penalty term.
+This parameter is chosen via cross-validation.
 
-Using the above, the maximization of the posterior distribution is equivalent to
-the minimization of the log-likelihood function
-\begin{equation}
-    \mathcal L = \text{const}
-    -\frac{N}{2} \log \sum_{i=1}^{N} \left[u_i - u(x_i, t_i; \VTheta)\right]^2 
-    -\frac{N}{2} \log \sum_{i=1}^{N} \left[f(x_i, t_i; \VLambda)\right]^2,
-\end{equation}
-the minimum of which yields the optimal values of $\VTheta$ and
-$\VLambda$.
+%We assume that all observations are independent from each other and that $u_i$
+%and $f_i$, $i=1,\dots,N$, are independent as well and that the observations
+%are Gaussian processes:
+%\begin{align}
+%    \rho(u_1,\dots,u_N | \VTheta, \sigma) &\propto \frac{1}{\sigma^N}
+%    \exp \left(
+%        -\frac{\sum_{i=1}^N\left(u_i-u(x_i,t_i; \VTheta)\right)^2}{2\sigma^2}
+%    \right) \\
+%    \rho(f_1,\dots,f_N | \vec{\lambda}, \tau) &\propto \frac{1}{\tau^N}
+%    \exp \left(
+%        - \frac{\sum_{i=1}^N f(x_i, t_i; \VLambda)^2}{2\tau^2}
+%    \right),
+%\end{align}
+%and assigning Jeffrey's priors for $\sigma$ and $\tau$, we obtain that
+%\begin{equation}
+%    \rho(\tilde{\vec{D}} | \VTheta, \VLambda) \propto
+%    \left( \sum_{i=1}^N (u_i - u(x_i, t_i; \VTheta))^2 \right)^{-N/2} \times
+%    \left( \sum_{i=1}^N (f(x_i, t_i; \VLambda))^2 \right)^{-N/2}.
+%\end{equation}
+%Moreover, we assume improper flat prior distribution:
+%\begin{equation}
+%    \rho(\vec{\theta}, \vec{\lambda}) = \text{const} \text{ for all }
+%    \vec{\theta} \text{ and } \vec{\lambda}.
+%\end{equation}
+
+\textbf{Uncertainty quantification}
 
 Training of neural networks in \cite{raissi2017pinnII} lacks uncertainty
-quantification for the found parameters. In this work we apply bootstrap
-procedure \cite{Wasserman2004} quantify the uncertainty by providing confidence
-sets for $\VLambda$.
+quantification for the found parameters, that is, only the point estimates are
+provided.
+In this work, we apply the bootstrap procedure \cite{Wasserman2004} to simulate
+$\VLambda$ and estimate its confidence sets.
 
 % Assuming that the noise between the observations and the model is Gaussian and
 % independent for each observation and assuming no prior information on the
@@ -127,21 +191,26 @@ sets for $\VLambda$.
 % \end{equation}
 % which is a maximum likelihood estimation procedure.
 
-As a concrete example, we consider linear heat equation
+\textbf{Applications}
+
+\textbf{1.} As a concrete example, we consider the linear heat equation
 \begin{equation}
     u_t - \lambda u_{xx} - g(t, x) = 0
 \end{equation}
-with one scalar sought-for parameter \(\lambda\) and given source function
-\(g(t, x) \).
+with one scalar sought-for parameter \(\lambda\in \R\) and given source function
+\(g(t, x)\).
+We generate observations from the exact solution and apply the above procedure
+to identify $\lambda$. We also investigate
+the performance of the parameter estimation when the observations are noisy.
 
-As a more difficult example, we consider viscous Burgers’ equation    
+\textbf{2.} As a more difficult example, we consider viscous Burgers’ equation    
 \begin{equation}
     u_t + \lambda_1 u u_x - \lambda_2 u_{xx} = 0, \quad x\in[-1; 1], t\in[0, 1]
 \end{equation}
 with sought-for parameter \( \VLambda = \left( \lambda_1, \lambda_2 \right)^\T \).
 This equation is nonlinear and serves as a prototype of the governing
-equations of fluid dynamics. It is known that the solutions of this equation
-may develop sharp gradients in finite time even for smooth initial condition.
+equations of fluid dynamics. As in Example 1, we investigate the performance
+of the parameter estimation for both clean and noisy observations.
 
 \bibliography{scope}
 \bibliographystyle{abbrv}
