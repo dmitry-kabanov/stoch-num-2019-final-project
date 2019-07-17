@@ -172,9 +172,44 @@ As one can see on the Figure 1., we use the first layer as input data driven for
     
 \end{frame}
 
+%slide 9 
 \begin{frame}
 
+Below, one can see the table of the output $\vec{\lambda}$ values depending on the network configuration for Burgers' equation. 
+Here we have the relative error: $\frac{\vert \lambda_i - \lambda_{i~True}\vert}{\lambda_{i~True}},~ i =1, 2$
+\begin{center}
+\begin{tabular}{||c | c | c | c | c||} 
+\hline
+Configuration & $\lambda_1$ & Error $\lambda_1$ & $\lambda_2$ & Error $\lambda_2$ \\ 
+\hline\hline
+[2, 10, 1] & 0.7347 & 26.527 & 0.00537 & 68.703 \\
+\hline
+[2, 20, 1] & 0.7398 & 26.0326 & 0.004882 & 53.3654 \\
+\hline
+[2, 10, 20, 1] & 0.951 &  4.89992 & 0.0044454 & 39.65582 \\
+\hline
+[2, 10, 20x2, 1] & 0.9975185 & 0.248152 & 0.003245 & 1.9329 \\
+\hline
+[2, 10, 20x3, 1] & 0.99794 &  0.20582 & 0.0032 & 0.614 \\
+\hline
+[2, 10, 20x4, 1] & 1.00022 & 0.02117 & 0.00321 & 0.2508 \\
+\hline
+[2, 10, 20x5, 1] & 0.99963 & 0.0374 & 0.003221 & 1.1881 \\
+\hline
+[2, 10, 20x6, 1] & 0.99985 & 0.01495 & 0.0031793 & 0.120 \\
+\hline
+\end{tabular}
 
+\caption{Table 1. Dependence of the $\vec{\lambda}$ on the number of network layers.}
+
+\end{center}
+    
+\end{frame}
+
+%slide 10
+\begin{frame}
+
+As one can see in Table 1., the network output directly depends on the network length. 
     
 \end{frame}
 
