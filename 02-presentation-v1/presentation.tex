@@ -33,11 +33,8 @@
 \end{itemize}
 \end{frame}
 
-% Common part (end)
-% ------------------------------------------------------------------------------
-
-%slide 3
-\begin{frame}{Introduction}
+%slide 2
+\begin{frame}{Introduction to the problem}
 
 The main goal fo our project is:
 
@@ -54,7 +51,7 @@ $\VLambda$ the vector of unknown parameters.
 
 \end{frame}
 
-%slide 4
+%slide 3
 \begin{frame}
 
 By Bayes' rule, the optimal value of $\VLambda$ is found through
@@ -84,30 +81,99 @@ nuisance parameter~\cite[section~8.2]{sivia2006data}
     
 \end{frame}
 
-% slide 5
+% slide 4
 \begin{frame}
 
-Analytical solution of the optimization problem~\eqref{eq:optim-ideal} can be expensive, so following \cite{raissi2017pinnII}.
+Analytical solution of the optimization problem~\eqref{eq:optim-ideal} can be expensive, so following \cite{raissi2017pinnII}
 we replace  $u(x_i, t_i; \VLambda)$ with a 
-feedforward neural network \cite{goodfellow2016deep}
+feedforward neural network \cite{goodfellow2016deep}. The description of the neural network will be presented in the slides below.
+
+Furthermore, to ensure that $\UNN( x, t; \VTheta)$
+is close to the exact solution of Eq.~\eqref{eq:pde}, we formulate the problem of estimating of the unknown parameters
+$\VLambda$:
+\begin{subequations}
+\label{eq:optim}
+\begin{align}
+    &\argmin_{\VLambda, \VTheta} \quad \ \ 
+        \sum_{i=1}^N \big[u_i - \UNN(x_i, t_i; \VTheta)\big]^2  \\
+    &\text{subject to } \ \ \UNN[\text{NN}, t]  + \NonlinOp(\UNN; \VLambda) = 0.
+\end{align}
+\end{subequations}
+
+\end{frame}
+
+% slide 5
+\begin{frame}
+The equality constraint is difficult to satisfy exactly as
+$u_{\text{NN}}$ is an approximation of the exact solution of
+Eq.~\eqref{eq:pde}.
+Therefore, we relax the optimization problem introducing a secondary NN
 \begin{equation}
-\UNN(x, t; \vec{\theta}) = g_L \circ g_{L-1} \circ \dots \circ g_1,
+    \FNN(x, t; \VLambda, \VTheta) =
+        u_{\text{NN}, t} + \NonlinOp(u_{\text{NN}}; \VLambda),
 \end{equation}
-where
-\[
-    g_\ell(z; \VTheta_\ell) = \sigma (W_\ell z + b_\ell), \quad \ell = 1,\dots,L,
-\]
-with $L$ is the number of layers in the network, with layers 0 and $L$ being
-input and output layers, respectively, and layers from 1 to $L-1$ being hidden
-layers, $\sigma$ being a nonlinear activation function applied
-componentwise. In this work, we plan to use \( \sigma(z) = \tanh (z) \).
+where we plug the neural network $\UNN$ into Eq.~\eqref{eq:pde} and
+require that $\FNN \approx 0$.
+
+Then both networks are trained simultaneously:
+\begin{equation}
+    \argmin_{\VLambda, \VTheta}
+    \sum_{i=1}^N \big[ u_i - \UNN(x_i, t_i; \VTheta)\big ]^2
+    +\gamma \sum_{i=1}^N \big[ \FNN(x_i, t_i; \VLambda, \VTheta) \big]^2,
+\end{equation}
+where $\gamma$ is an extra hyperparameter that controls the importance of the
+penalty term.
+This parameter $\gamma$ is chosen via cross-validation.
     
 \end{frame}
 
 %slide 6
-\begin{frame}
+\begin{frame}{Description of neural networks}
+    
+Let us recall the neural network equation:
+$$
+\UNN(x, t; \vec{\theta}) = g_L \circ g_{L-1} \circ \dots \circ g_1,
+$$
+where
+\[
+    g_\ell(z; \VTheta_\ell) = \sigma (W_\ell z + b_\ell), \quad \ell = 1,\dots,L.
+\]
+Here 
+\begin{itemize}
+    \item $L$  - is the number of layers in the network,
+    \item 0 layer and $L$ layer are input and output layers, respectively,
+    \item layers from 1 to $L-1$ - are hidden layers,
+    \item $\sigma = \tanh (z) $ - is a nonlinear activation function applied componentwise.
+\end{itemize} 
+ 
+The neural-network parameter $\VTheta$ contains the components of matrices
+$W_\ell \in \R^{n_{\ell}\times n_{\ell-1}}$ and bias vectors
+$b_\ell \in \R^{n_\ell}$, where $n_\ell$  (number of "neurons") denotes the width of the
+$\ell$\textsuperscript{th} layer.
     
 \end{frame}
+
+% slide 7
+\begin{frame}
+
+Below, one can see the scheme of the neural network that we use in this project:
+\begin{center}
+\includegraphics[width = 10cm , height = 6cm]{02-presentation-v1/images/NN_scheme.png}
+\\
+\caption{Figure 1. Physics informed neural network.}
+\end{center}
+    
+\end{frame}
+
+%slide 8
+\begin{frame}
+
+As one can see on the Figure 1., we use the first layer as input data driven form the equation (1). As an activation function, we use $\sigma = tanh(z)$. We use $tahn(z)$ as its derivative has a good behaviour in the region $[-1, 1]$ \cite{nndesign}. In total, the neural network has 10 layers. 6 of them have a width of 20 "neurons". Below, we will show the dependence of the resulting value $\lambda$ on the neural network configuration. Especially, the affection of the number of hidden layers in the network.
+    
+\end{frame}
+
+% Common part (end)
+% ------------------------------------------------------------------------------
 
 % ------------------------------------------------------------------------------
 % Heat equation part
@@ -122,10 +188,10 @@ componentwise. In this work, we plan to use \( \sigma(z) = \tanh (z) \).
 
 \section{Burgers' equation}
 
-%slide 1
+%slide 10
 \begin{frame}
 
-Let us consider the Burgers' equation. This equation is nonlinear and serves as a prototype of the governing equations of fluid dynamics [1]. 
+Let us consider the Burgers' equation. This equation is nonlinear and serves as a prototype of the governing equations of fluid dynamics \cite{comp1986fluids}. 
 \begin{equation}
     \frac{\partial u}{\partial t} + u \frac{\partial u}{\partial x} = \nu^2 \frac{\partial^2 u}{\partial x^2}
 \end{equation}
@@ -133,7 +199,7 @@ For small values of the viscosity parameter $\nu$ , Burgers' equation can lead t
 
 \end{frame}
 
-% silde 2
+% silde 11
 \begin{frame}
 In this project we are going to consider the input data of the following form of the Burgers' equation:
 \begin{align}
@@ -148,10 +214,10 @@ $t \in [0, 1] \text{ of size } [100, 1], \\ ~ x \in [-1, 1] \text{ of size } [25
 
 \end{frame}
 
-% slide 3
+% slide 12
 \begin{frame}
 
-Optimising all loss functions using L-BFGS (a quasi-Newton, full-batch gradient-based optimisation algorithm [2]), we have got the following bootstrapped results:
+Optimising all loss functions using L-BFGS (a quasi-Newton, full-batch gradient-based optimisation algorithm \cite{Liu1989Nocedal}), we have got the following bootstrapped results:
 
 \begin{center}
 \includegraphics[width = 5.7cm , height = 4cm]{02-presentation-v1/images/l1_confidence.png}
@@ -161,7 +227,7 @@ Optimising all loss functions using L-BFGS (a quasi-Newton, full-batch gradient-
 \end{center}
 \end{frame}
 
-% slide 4
+% slide 13
 \begin{frame}
 
 The panel of Figure 2 shows the predicted spatio-temporal solution u(t,x), along with the locations of the initial and boundary training data. This prediction is obtained without any sort of discretization of the spatio-temporal domain. 
@@ -174,7 +240,7 @@ The panel of Figure 2 shows the predicted spatio-temporal solution u(t,x), along
 
 \end{frame}
 
-% slide 5
+% slide 14
 \begin{frame}
 
 Below, we present a comparison between the exact and the predicted solutions at different time instants t = 0.25, 0.50, 0.75. The physics informed NN accurately captures the nonlinear behavior of the Burgers' equation that leads to the development of a sharp internal layer around t = 0.4.
@@ -187,20 +253,11 @@ Below, we present a comparison between the exact and the predicted solutions at 
 
 \end{frame}
 
-% slide 6
+% slide 15
 \begin{frame}
 
 Therefore, a key property of physics informed neural networks is that they can be effectively trained using small data sets; a setting often encountered in the study of physical systems for which the cost of data acquisition may be prohibitive.
     
-\end{frame}
-
-%slide 7
-\begin{frame}{Reference}
-
-[1] C. Basdevant, M. Deville, P. Haldenwang, J. Lacroix, J. Ouazzani, R. Peyret, P. Orlandi, A. Patera, Spectral and finite difference solutions of the Burgers equation, Computers & fluids 14 (1986) 23 - 41.
-
-[2] D. C. Liu, J. Nocedal, On the limited memory BFGS method for large scale optimization, Mathematical programming 45 (1989) 503–528. 
-
 \end{frame}
 
 % Burgers' equation (end)
