@@ -36,7 +36,78 @@
 % Common part (end)
 % ------------------------------------------------------------------------------
 
+%slide 3
+\begin{frame}{Introduction}
 
+The main goal fo our project is:
+
+Given data $\vec{D} = \{t_i, x_i, u_i\},`~i = 1, ..., N,$ observed from the solution of PDE of the form
+\begin{equation}
+    \label{eq:pde}
+    u_t + \mathcal N\!(u; \VLambda) = 0,
+\end{equation}
+estimate $\VLambda$.
+
+Here $u=u(x, t)$ is the solution of the equation,
+$\NonlinOp(u; \VLambda)$ a nonlinear algebraic-differential operator,
+$\VLambda$ the vector of unknown parameters.
+
+\end{frame}
+
+%slide 4
+\begin{frame}
+
+By Bayes' rule, the optimal value of $\VLambda$ is found through
+maximization of the posterior distribution \cite{sivia2006data}
+\begin{equation}
+    \rho( \VLambda | \Data ) \propto
+    \rho( \Data | \VLambda ) \times \rho( \VLambda ).
+\end{equation}
+
+Furthemore, we assume
+\begin{equation}
+    u_i = u(x_i, t_i; \VLambda) + \epsilon_i, \quad i=1, \dots, N,
+\end{equation}
+where $\epsilon_i \sim N(0, \sigma^2)$, and assign uninformative prior for $\VLambda$
+\begin{equation}
+    \rho(\vec{\lambda}) = \text{const} \quad \text{ for all } \vec{\lambda},
+\end{equation}
+so that, the problem of finding $\VLambda$ is a nonlinear unconstrained
+optimization problem
+\begin{equation}
+    \label{eq:optim-ideal}
+    \argmin_{\VLambda} \quad 
+    \log \sum_{i=1}^{N} \big[ u_i - u(x_i, t_i; \VLambda) \big]^2,
+\end{equation}
+here noise variance $\sigma^2$ is a~
+nuisance parameter~\cite[section~8.2]{sivia2006data}
+    
+\end{frame}
+
+% slide 5
+\begin{frame}
+
+Analytical solution of the optimization problem~\eqref{eq:optim-ideal} can be expensive, so following \cite{raissi2017pinnII}.
+we replace  $u(x_i, t_i; \VLambda)$ with a 
+feedforward neural network \cite{goodfellow2016deep}
+\begin{equation}
+\UNN(x, t; \vec{\theta}) = g_L \circ g_{L-1} \circ \dots \circ g_1,
+\end{equation}
+where
+\[
+    g_\ell(z; \VTheta_\ell) = \sigma (W_\ell z + b_\ell), \quad \ell = 1,\dots,L,
+\]
+with $L$ is the number of layers in the network, with layers 0 and $L$ being
+input and output layers, respectively, and layers from 1 to $L-1$ being hidden
+layers, $\sigma$ being a nonlinear activation function applied
+componentwise. In this work, we plan to use \( \sigma(z) = \tanh (z) \).
+    
+\end{frame}
+
+%slide 6
+\begin{frame}
+    
+\end{frame}
 
 % ------------------------------------------------------------------------------
 % Heat equation part
