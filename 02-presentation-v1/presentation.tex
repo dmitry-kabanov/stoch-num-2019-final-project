@@ -3,10 +3,21 @@
 \usepackage{fourier}
 \usetheme{metropolis}
 
-\title{\vspace{-0.5cm}Parameter estimation\\of partial differential equations\\via neural networks}
+% This block allows to include images and bib files relative to this TeX file.
+\newcommand{\PathToTexFile}{02-presentation-v1}
+\graphicspath{\PathToTexFile}
+
+\pdfstringdefDisableCommands{%
+  \def\\{}%
+  \def\texttt#1{<#1>}%
+}
+
+\title{Parameter estimation\\of partial differential equations\\via neural networks}
 \author{Alexander Glushko, Dmitry I.\ Kabanov}
 \date{Final project on the Stochastic Numerics course\\Once upon a time in 2019}
 
+% ------------------------------------------------------------------------------
+% Useful mathematical macros
 \newcommand{\Data}{\vec{D}}
 \newcommand{\DataExt}{\widetilde{\vec{D}}}
 \newcommand{\MSE}{\ensuremath{\text{MSE}}}
@@ -19,6 +30,8 @@
 \newcommand{\UNN}[1][\text{NN}]{u_{#1}}
 \newcommand{\FNN}[1][\text{NN}]{f_{#1}}
 \newcommand{\NonlinOp}{\mathcal N\!}
+% Useful mathematical macros (end)
+% ------------------------------------------------------------------------------
 
 \begin{document}
 \maketitle
@@ -61,7 +74,7 @@ maximization of the posterior distribution \cite{sivia2006data}
     \rho( \Data | \VLambda ) \times \rho( \VLambda ).
 \end{equation}
 
-Furthemore, we assume
+Furthermore, we assume
 \begin{equation}
     u_i = u(x_i, t_i; \VLambda) + \epsilon_i, \quad i=1, \dots, N,
 \end{equation}
@@ -157,26 +170,35 @@ $\ell$\textsuperscript{th} layer.
 \begin{frame}
 
 Below, one can see the scheme of the neural network that we use in this project:
-\begin{center}
-\includegraphics[width = 10cm , height = 6cm]{02-presentation-v1/images/NN_scheme.png}
+\begin{figure}
+\centering
+\includegraphics[width = 10cm , height = 6cm]{images/NN_scheme.png}
 \\
 \caption{Figure 1. Physics informed neural network.}
-\end{center}
-    
+\end{figure}
 \end{frame}
 
 %slide 8
 \begin{frame}
 
-As one can see on the Figure 1., we use the first layer as input data driven form the equation (1). As an activation function, we use $\sigma = tanh(z)$. We use $tahn(z)$ as its derivative has a good behaviour in the region $[-1, 1]$ \cite{nndesign}. In total, the neural network has 10 layers. 6 of them have a width of 20 "neurons". Below, we will show the dependence of the resulting value $\lambda$ on the neural network configuration. Especially, the affection of the number of hidden layers in the network.
+As one can see on the Figure 1., we use the first layer as input data driven
+form the equation (1). As an activation function, we use $\sigma = tanh(z)$. We
+use $tahn(z)$ as its derivative has a good behavior in the region $[-1, 1]$
+\cite{nndesign}. In total, the neural network has 10 layers. 6 of them have a
+width of 20 "neurons". Below, we will show the dependence of the resulting value
+$\lambda$ on the neural network configuration. Especially, the affection of the
+number of hidden layers in the network.
     
 \end{frame}
 
 %slide 9 
 \begin{frame}
 
-Below, one can see the table of the output $\vec{\lambda}$ values depending on the network configuration for Burgers' equation. 
-Here we have the relative error: $\frac{\vert \lambda_i - \lambda_{i~True}\vert}{\lambda_{i~True}},~ i =1, 2$
+Below, one can see the table of the output $\vec{\lambda}$ values depending on
+the network configuration for Burgers' equation. Here we have the relative
+error: $\frac{\vert \lambda_i - \lambda_{i~True}\vert}{\lambda_{i~True}},~ i =1,
+2$
+\begin{table}
 \begin{center}
 \begin{tabular}{||c | c | c | c | c||} 
 \hline
@@ -199,10 +221,9 @@ Configuration & $\lambda_1$ & Error $\lambda_1$ & $\lambda_2$ & Error $\lambda_2
 [2, 10, 20x6, 1] & 0.99985 & 0.01495 & 0.0031793 & 0.120 \\
 \hline
 \end{tabular}
-
 \caption{Table 1. Dependence of the $\vec{\lambda}$ on the number of network layers.}
-
 \end{center}
+\end{table}
     
 \end{frame}
 
@@ -216,6 +237,7 @@ As one can see in Table 1., the network output directly depends on the network l
 % Common part (end)
 % ------------------------------------------------------------------------------
 
+
 % ------------------------------------------------------------------------------
 % Heat equation part
 
@@ -223,6 +245,7 @@ As one can see in Table 1., the network output directly depends on the network l
 
 % Heat equation part (end)
 % ------------------------------------------------------------------------------
+
 
 % ------------------------------------------------------------------------------
 % Burgers' equation
@@ -240,64 +263,86 @@ For small values of the viscosity parameter $\nu$ , Burgers' equation can lead t
 
 \end{frame}
 
-% silde 11
+% slide 11
 \begin{frame}
-In this project we are going to consider the input data of the following form of the Burgers' equation:
+In this project we are going to consider the input data of the following form of
+the Burgers' equation:
 \begin{align}
-
 u_t + u u_x - (0.01/\pi)u_{xx} = 0, x \in [-1, 1], t \in [0, T], &\\
 u(0, x) = -sin(\pi x), & \\
-u(t, -1) = u(t, 1) = 0.
+u(t, -1) = u(t, 1) = 0.&
 \end{align}
 As we are solving the inverse problem, our goal is to find values:
-$$\lambda_1 = 1, ~ \lambda_2 = (0.01 / \pi) \approx 0.318, $$ using the following input data matrices:
-$t \in [0, 1] \text{ of size } [100, 1], \\ ~ x \in [-1, 1] \text{ of size } [256, 1],~ u \text{ of size } [256, 100].$
+\[
+    \lambda_1 = 1,  \lambda_2 = (0.01 / \pi) \approx 0.318
+\]
+using the
+following input data matrices: 
+\begin{align}
+t \in [0, 1] \text{ of size } [100, 1], \\ x
+\in [-1, 1] \text{ of size } [256, 1], u \text{ of size } [256, 100]
+\end{align}
 
 \end{frame}
 
 % slide 12
 \begin{frame}
 
-Optimising all loss functions using L-BFGS (a quasi-Newton, full-batch gradient-based optimisation algorithm \cite{Liu1989Nocedal}), we have got the following bootstrapped results:
+Optimizing all loss functions using L-BFGS (a quasi-Newton, full-batch gradient-based optimization algorithm \cite{Liu1989Nocedal}), we have got the following bootstrapped results:
 
-\begin{center}
-\includegraphics[width = 5.7cm , height = 4cm]{02-presentation-v1/images/l1_confidence.png}
-\includegraphics[width = 5.7cm , height = 4cm]{02-presentation-v1/images/l2_confidence.png}
+\begin{figure}
+\centering
+\includegraphics[width = 5.7cm , height = 4cm]{images/l1_confidence.png}
+\includegraphics[width = 5.7cm , height = 4cm]{images/l2_confidence.png}
 \\
 \caption{Figure 1. Bootstrapped parameters $\lambda_1$ and $\lambda_2$ for Burgers' equation.}
-\end{center}
+\end{figure}
+
 \end{frame}
 
 % slide 13
 \begin{frame}
 
-The panel of Figure 2 shows the predicted spatio-temporal solution u(t,x), along with the locations of the initial and boundary training data. This prediction is obtained without any sort of discretization of the spatio-temporal domain. 
+The panel of Figure 2 shows the predicted solution u(t,x) along with the
+locations of the initial and boundary training data. This prediction is obtained
+without any sort of discretization of the spatiotemporal domain. 
 
-\begin{center}
-\includegraphics[width = 10cm , height = 4cm]{02-presentation-v1/images/predicted_sol_burgers.png}
+\begin{figure}
+\centering
+\includegraphics[width = 10cm , height = 4cm]{images/predicted_sol_burgers.png}
 \\
-\caption{Figure 2. Predicted solution $u(t,x)$ along with the initial and boundary training data.}
-\end{center}
+\caption{Figure 2. Predicted solution $u(t,x)$ along with the initial and
+boundary training data.}
+\end{figure}
 
 \end{frame}
 
 % slide 14
 \begin{frame}
 
-Below, we present a comparison between the exact and the predicted solutions at different time instants t = 0.25, 0.50, 0.75. The physics informed NN accurately captures the nonlinear behavior of the Burgers' equation that leads to the development of a sharp internal layer around t = 0.4.
+Below, we present a comparison between the exact and the predicted solutions at
+different time instants t = 0.25, 0.50, 0.75. The physics informed NN accurately
+captures the nonlinear behavior of the Burgers' equation that leads to the
+development of a sharp internal layer around t = 0.4.
     
-\begin{center}
-\includegraphics[width = 8cm , height = 4cm]{02-presentation-v1/images/exact_pred_burgers.png}
+\begin{figure}
+\centering
+\includegraphics[width = 8cm , height = 4cm]{images/exact_pred_burgers.png}
 \\
-\caption{Figure 3. Comparison of the predicted and exact solutions corresponding to the three temporal snapshots depicted by the white vertical lines in the top panel.}
-\end{center}
+\caption{Figure 3. Comparison of the predicted and exact solutions
+corresponding to the three temporal snapshots depicted by the white vertical
+lines in the top panel.}
+\end{figure}
 
 \end{frame}
 
 % slide 15
 \begin{frame}
 
-Therefore, a key property of physics informed neural networks is that they can be effectively trained using small data sets; a setting often encountered in the study of physical systems for which the cost of data acquisition may be prohibitive.
+Therefore, a key property of physics informed neural networks is that they can
+be effectively trained using small data sets; a setting often encountered in the
+study of physical systems for which the cost of data acquisition may be
+prohibitive.
     
 \end{frame}
 
