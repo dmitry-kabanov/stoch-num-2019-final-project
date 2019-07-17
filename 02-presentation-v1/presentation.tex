@@ -123,7 +123,7 @@ Then both networks are trained simultaneously:
 \end{equation}
 where $\gamma$ is an extra hyperparameter that controls the importance of the
 penalty term.
-This parameter $\gamma$ is chosen via cross-validation.
+This parameter $\gamma$ is chosen via cross-validation and bayesian regularization.
     
 \end{frame}
 
@@ -169,6 +169,12 @@ Below, one can see the scheme of the neural network that we use in this project:
 \begin{frame}
 
 As one can see on the Figure 1., we use the first layer as input data driven form the equation (1). As an activation function, we use $\sigma = tanh(z)$. We use $tahn(z)$ as its derivative has a good behaviour in the region $[-1, 1]$ \cite{nndesign}. In total, the neural network has 10 layers. 6 of them have a width of 20 "neurons". Below, we will show the dependence of the resulting value $\lambda$ on the neural network configuration. Especially, the affection of the number of hidden layers in the network.
+    
+\end{frame}
+
+\begin{frame}
+
+
     
 \end{frame}
 
