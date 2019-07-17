@@ -241,7 +241,39 @@ As one can see in Table 1., the network output directly depends on the network l
 % ------------------------------------------------------------------------------
 % Heat equation part
 
+\section{Example 1. Heat equation}
 
+\begin{frame}{Heat equation}
+    We consider linear heat equation with homogeneous Dirichlet boundary
+    conditions
+\begin{align*}
+    &u_t - \lambda u_xx - g(x, t) = 0, \quad x\in[-1; 1], \quad t\in[0, 1] \\
+    &u(x, 0) = 0 \\
+    &u(0, x) = u(1, x) = 0
+\end{align*}
+with source term $g(x, t) = (4\pi^2 -1) \, \sin(2\pi x) \, \exp(-t)$.
+
+True value of $\lambda$ is 1.
+\end{frame}
+
+\begin{frame}{Observations}
+The exact solution $u = \sin(2\pi x) \, \exp(-t)$ is given on the uniform grid
+with 201 points in $x$ and 101 points in $t$. 
+We sample 3200 observations uniformly.
+
+\centering
+\includegraphics{images/heateq-observations}
+\end{frame}
+
+\begin{frame}{Preliminary results with $\gamma=2$}
+Training the network with $\gamma=2$ gives prediction $\widehat{\lambda} =
+1.00175$ with error $\approx 0.18 \,\%$.
+
+\vspace{0.5cm}
+\centering
+\includegraphics[scale=0.55]{images/heateq-predictions}
+
+\end{frame}
 
 % Heat equation part (end)
 % ------------------------------------------------------------------------------
