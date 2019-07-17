@@ -37,6 +37,7 @@
 % ------------------------------------------------------------------------------
 
 
+
 % ------------------------------------------------------------------------------
 % Heat equation part
 
@@ -48,6 +49,88 @@
 % ------------------------------------------------------------------------------
 % Burgers' equation
 
+\section{Burgers' equation}
+
+%slide 1
+\begin{frame}
+
+Let us consider the Burgers' equation. This equation is nonlinear and serves as a prototype of the governing equations of fluid dynamics [1]. 
+\begin{equation}
+    \frac{\partial u}{\partial t} + u \frac{\partial u}{\partial x} = \nu^2 \frac{\partial^2 u}{\partial x^2}
+\end{equation}
+For small values of the viscosity parameter $\nu$ , Burgers' equation can lead to shock formation that is notoriously hard to resolve by classical numerical methods. 
+
+\end{frame}
+
+% silde 2
+\begin{frame}
+In this project we are going to consider the input data of the following form of the Burgers' equation:
+\begin{align}
+
+u_t + u u_x - (0.01/\pi)u_{xx} = 0, x \in [-1, 1], t \in [0, T], &\\
+u(0, x) = -sin(\pi x), & \\
+u(t, -1) = u(t, 1) = 0.
+\end{align}
+As we are solving the inverse problem, our goal is to find values:
+$$\lambda_1 = 1, ~ \lambda_2 = (0.01 / \pi) \approx 0.318, $$ using the following input data matrices:
+$t \in [0, 1] \text{ of size } [100, 1], \\ ~ x \in [-1, 1] \text{ of size } [256, 1],~ u \text{ of size } [256, 100].$
+
+\end{frame}
+
+% slide 3
+\begin{frame}
+
+Optimising all loss functions using L-BFGS (a quasi-Newton, full-batch gradient-based optimisation algorithm [2]), we have got the following bootstrapped results:
+
+\begin{center}
+\includegraphics[width = 5.7cm , height = 4cm]{02-presentation-v1/images/l1_confidence.png}
+\includegraphics[width = 5.7cm , height = 4cm]{02-presentation-v1/images/l2_confidence.png}
+\\
+\caption{Figure 1. Bootstrapped parameters $\lambda_1$ and $\lambda_2$ for Burgers' equation.}
+\end{center}
+\end{frame}
+
+% slide 4
+\begin{frame}
+
+The panel of Figure 2 shows the predicted spatio-temporal solution u(t,x), along with the locations of the initial and boundary training data. This prediction is obtained without any sort of discretization of the spatio-temporal domain. 
+
+\begin{center}
+\includegraphics[width = 10cm , height = 4cm]{02-presentation-v1/images/predicted_sol_burgers.png}
+\\
+\caption{Figure 2. Predicted solution $u(t,x)$ along with the initial and boundary training data.}
+\end{center}
+
+\end{frame}
+
+% slide 5
+\begin{frame}
+
+Below, we present a comparison between the exact and the predicted solutions at different time instants t = 0.25, 0.50, 0.75. The physics informed NN accurately captures the nonlinear behavior of the Burgers' equation that leads to the development of a sharp internal layer around t = 0.4.
+    
+\begin{center}
+\includegraphics[width = 8cm , height = 4cm]{02-presentation-v1/images/exact_pred_burgers.png}
+\\
+\caption{Figure 3. Comparison of the predicted and exact solutions corresponding to the three temporal snapshots depicted by the white vertical lines in the top panel.}
+\end{center}
+
+\end{frame}
+
+% slide 6
+\begin{frame}
+
+Therefore, a key property of physics informed neural networks is that they can be effectively trained using small data sets; a setting often encountered in the study of physical systems for which the cost of data acquisition may be prohibitive.
+    
+\end{frame}
+
+%slide 7
+\begin{frame}{Reference}
+
+[1] C. Basdevant, M. Deville, P. Haldenwang, J. Lacroix, J. Ouazzani, R. Peyret, P. Orlandi, A. Patera, Spectral and finite difference solutions of the Burgers equation, Computers & fluids 14 (1986) 23 - 41.
+
+[2] D. C. Liu, J. Nocedal, On the limited memory BFGS method for large scale optimization, Mathematical programming 45 (1989) 503–528. 
+
+\end{frame}
 
 % Burgers' equation (end)
 % ------------------------------------------------------------------------------
@@ -60,7 +143,5 @@
 
 \bibliography{presentation}
 \bibliographystyle{abbrv}
-
-\input{02-presentation-v1/slides/regularization.tex}
 
 \end{document}
