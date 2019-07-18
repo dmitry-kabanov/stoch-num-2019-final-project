@@ -229,7 +229,7 @@ As one can see in Table 1., the network output directly depends on the network l
 
 \section{Burgers' equation}
 
-%slide 10
+%slide 11
 \begin{frame}
 
 Let us consider the Burgers' equation. This equation is nonlinear and serves as a prototype of the governing equations of fluid dynamics \cite{comp1986fluids}. 
@@ -240,7 +240,7 @@ For small values of the viscosity parameter $\nu$ , Burgers' equation can lead t
 
 \end{frame}
 
-% silde 11
+% silde 12
 \begin{frame}
 In this project we are going to consider the input data of the following form of the Burgers' equation:
 \begin{align}
@@ -255,20 +255,32 @@ $t \in [0, 1] \text{ of size } [100, 1], \\ ~ x \in [-1, 1] \text{ of size } [25
 
 \end{frame}
 
-% slide 12
+% slide 13
 \begin{frame}
 
 Optimising all loss functions using L-BFGS (a quasi-Newton, full-batch gradient-based optimisation algorithm \cite{Liu1989Nocedal}), we have got the following bootstrapped results:
 
 \begin{center}
-\includegraphics[width = 5.7cm , height = 4cm]{02-presentation-v1/images/l1_confidence.png}
-\includegraphics[width = 5.7cm , height = 4cm]{02-presentation-v1/images/l2_confidence.png}
+\includegraphics[width = 11cm, height = 6cm]{02-presentation-v1/images/bootstrap_l1.pdf}
 \\
-\caption{Figure 1. Bootstrapped parameters $\lambda_1$ and $\lambda_2$ for Burgers' equation.}
+\caption{\textbf{Figure 1.} Bootstrapped parameter $\lambda_1$ for Burgers' equation.}
 \end{center}
+
 \end{frame}
 
-% slide 13
+% slide 14
+\begin{frame}
+
+\begin{center}
+\centering
+\includegraphics[width = 11cm, height = 6cm]{02-presentation-v1/images/bootstrap_l2.pdf}
+\\
+\caption{\textbf{Figure 2.} Bootstrapped parameter $\lambda_2$ for Burgers' equation.}
+\end{center}
+
+\end{frame}
+
+% slide 14
 \begin{frame}
 
 The panel of Figure 2 shows the predicted spatio-temporal solution u(t,x), along with the locations of the initial and boundary training data. This prediction is obtained without any sort of discretization of the spatio-temporal domain. 
@@ -281,7 +293,7 @@ The panel of Figure 2 shows the predicted spatio-temporal solution u(t,x), along
 
 \end{frame}
 
-% slide 14
+% slide 15
 \begin{frame}
 
 Below, we present a comparison between the exact and the predicted solutions at different time instants t = 0.25, 0.50, 0.75. The physics informed NN accurately captures the nonlinear behavior of the Burgers' equation that leads to the development of a sharp internal layer around t = 0.4.
@@ -294,7 +306,7 @@ Below, we present a comparison between the exact and the predicted solutions at 
 
 \end{frame}
 
-% slide 15
+% slide 16
 \begin{frame}
 
 Therefore, a key property of physics informed neural networks is that they can be effectively trained using small data sets; a setting often encountered in the study of physical systems for which the cost of data acquisition may be prohibitive.
