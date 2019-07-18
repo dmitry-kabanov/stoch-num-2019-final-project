@@ -52,10 +52,10 @@
 The main goal fo our project is:
 
 Given data $\vec{D} = \{t_i, x_i, u_i\},`~i = 1, ..., N,$ observed from the solution of PDE of the form
-\begin{equation}
+\begin{equation*}
     \label{eq:pde}
     u_t + \mathcal N\!(u; \VLambda) = 0,
-\end{equation}
+\end{equation*}
 estimate $\VLambda$.
 
 Here $u=u(x, t)$ is the solution of the equation,
@@ -69,26 +69,26 @@ $\VLambda$ the vector of unknown parameters.
 
 By Bayes' rule, the optimal value of $\VLambda$ is found through
 maximization of the posterior distribution \cite{sivia2006data}
-\begin{equation}
+\begin{equation*}
     \rho( \VLambda | \Data ) \propto
     \rho( \Data | \VLambda ) \times \rho( \VLambda ).
-\end{equation}
+\end{equation*}
 
 Furthermore, we assume
-\begin{equation}
+\begin{equation*}
     u_i = u(x_i, t_i; \VLambda) + \epsilon_i, \quad i=1, \dots, N,
-\end{equation}
+\end{equation*}
 where $\epsilon_i \sim N(0, \sigma^2)$, and assign uninformative prior for $\VLambda$
-\begin{equation}
+\begin{equation*}
     \rho(\vec{\lambda}) = \text{const} \quad \text{ for all } \vec{\lambda},
-\end{equation}
+\end{equation*}
 so that, the problem of finding $\VLambda$ is a nonlinear unconstrained
 optimization problem
-\begin{equation}
+\begin{equation*}
     \label{eq:optim-ideal}
     \argmin_{\VLambda} \quad 
     \log \sum_{i=1}^{N} \big[ u_i - u(x_i, t_i; \VLambda) \big]^2,
-\end{equation}
+\end{equation*}
 here noise variance $\sigma^2$ is a~
 nuisance parameter~\cite[section~8.2]{sivia2006data}
     
@@ -106,11 +106,11 @@ is close to the exact solution of Eq.~\eqref{eq:pde}, we formulate the problem o
 $\VLambda$:
 \begin{subequations}
 \label{eq:optim}
-\begin{align}
+\begin{align*}
     &\argmin_{\VLambda, \VTheta} \quad \ \ 
         \sum_{i=1}^N \big[u_i - \UNN(x_i, t_i; \VTheta)\big]^2  \\
     &\text{subject to } \ \ \UNN[\text{NN}, t]  + \NonlinOp(\UNN; \VLambda) = 0.
-\end{align}
+\end{align*}
 \end{subequations}
 
 \end{frame}
@@ -121,19 +121,19 @@ The equality constraint is difficult to satisfy exactly as
 $u_{\text{NN}}$ is an approximation of the exact solution of
 Eq.~\eqref{eq:pde}.
 Therefore, we relax the optimization problem introducing a secondary NN
-\begin{equation}
+\begin{equation*}
     \FNN(x, t; \VLambda, \VTheta) =
         u_{\text{NN}, t} + \NonlinOp(u_{\text{NN}}; \VLambda),
-\end{equation}
+\end{equation*}
 where we plug the neural network $\UNN$ into Eq.~\eqref{eq:pde} and
 require that $\FNN \approx 0$.
 
 Then both networks are trained simultaneously:
-\begin{equation}
+\begin{equation*}
     \argmin_{\VLambda, \VTheta}
     \sum_{i=1}^N \big[ u_i - \UNN(x_i, t_i; \VTheta)\big ]^2
     +\gamma \sum_{i=1}^N \big[ \FNN(x_i, t_i; \VLambda, \VTheta) \big]^2,
-\end{equation}
+\end{equation*}
 where $\gamma$ is an extra hyperparameter that controls the importance of the
 penalty term.
 This parameter $\gamma$ is chosen via cross-validation and bayesian regularization.
@@ -288,9 +288,9 @@ Training the network with $\gamma=2$ gives prediction $\widehat{\lambda} =
 \begin{frame}
 
 Let us consider the Burgers' equation. This equation is nonlinear and serves as a prototype of the governing equations of fluid dynamics \cite{comp1986fluids}. 
-\begin{equation}
+\begin{equation*}
     \frac{\partial u}{\partial t} + u \frac{\partial u}{\partial x} = \nu^2 \frac{\partial^2 u}{\partial x^2}
-\end{equation}
+\end{equation*}
 For small values of the viscosity parameter $\nu$ , Burgers' equation can lead to shock formation that is notoriously hard to resolve by classical numerical methods. 
 
 \end{frame}
@@ -299,21 +299,21 @@ For small values of the viscosity parameter $\nu$ , Burgers' equation can lead t
 \begin{frame}
 In this project we are going to consider the input data of the following form of
 the Burgers' equation:
-\begin{align}
+\begin{align*}
 u_t + u u_x - (0.01/\pi)u_{xx} = 0, x \in [-1, 1], t \in [0, T], &\\
 u(0, x) = -sin(\pi x), & \\
 u(t, -1) = u(t, 1) = 0.&
-\end{align}
+\end{align*}
 As we are solving the inverse problem, our goal is to find values:
 \[
     \lambda_1 = 1,  \lambda_2 = (0.01 / \pi) \approx 0.318
 \]
 using the
 following input data matrices: 
-\begin{align}
+\begin{align*}
 t \in [0, 1] \text{ of size } [100, 1], \\ x
 \in [-1, 1] \text{ of size } [256, 1], u \text{ of size } [256, 100]
-\end{align}
+\end{align*}
 
 \end{frame}
 
