@@ -247,3 +247,7 @@ autoenv-leave.zsh
 
 # macOS specific files.
 .DS_Store
+
+# Ignore external git repositories.
+./PINNs-master
+./pyDOE-master
