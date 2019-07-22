@@ -249,5 +249,11 @@ autoenv-leave.zsh
 .DS_Store
 
 # Ignore external git repositories.
-./PINNs-master
-./pyDOE-master
+PINNs-master/
+pyDOE-master/
+
+# Ignore .vscode artefacts.
+.vscode/
+
+# Ignore submitted scope versions and comments.
+01-scope/versions
