@@ -3,6 +3,12 @@
 \usepackage{fourier}
 \usetheme{metropolis}
 
+% Table packages.
+\usepackage{booktabs}
+
+\usepackage{makecell}
+\usepackage{tikz}
+
 % This block allows to include images and bib files relative to this TeX file.
 %\newcommand{\PathToTexFile}{02-presentation-v1}
 %\graphicspath{\PathToTexFile}
@@ -265,6 +271,16 @@ with true values of the sought-for parameters
 \[
     \lambda_1 = 1,  \quad \lambda_2 = (0.01 / \pi) \approx 0.318.
 \]
+{\color{red} The next paragraph is super heavy.
+First of all, $N$ is the number observations, do not reuse
+the letter for a different purpose.
+Call the dimension of $\theta$, for example, $M$.
+Second, explain better: in the input layer there are two
+neurons, but they do not affect $\theta$; not ``units'' but ``neurons''.
+May be, even make a separate slide on how your network
+is structured, and how the number of observations is affected.
+}
+
 For this problem 3700 observations were used. The optimal number of them is: $2*N^2$, where $N$ is the number of model parameters. As we have 2 input layers, 40 - units in the hidden layers and 1 output layer, we get 3700.
 
 %{\color{red}Write how many observations you take and how}
@@ -273,27 +289,29 @@ For this problem 3700 observations were used. The optimal number of them is: $2*
 
 \begin{frame}{Observations}
 \small
+{\color{red}What is $\nu$ in the below formula?}
 The exact solution $u(t, x) = \frac{\pi \nu}{\pi \nu exp{\{\pi^2 \nu t\}} - (exp{\{\pi^2 \nu t\}} - 1) cos(\pi x)}$ is given on the uniform grid with 201 points in $x$ and 101 points in $t$. 
 \begin{figure}
     \centering
-    \includegraphics[width=10cm, height=6cm]{02-presentation-v1/images/burgers-exact.png}
+    \includegraphics[width=10cm, height=6cm]{images/burgers-exact.png}
     \caption{The exact solution of Burgers' equation and 3700 observations.}
     \label{fig:my_label}
 \end{figure}
 
 \centering
-\includegraphics{images/burgers-observations}
+%\includegraphics{images/burgers-observations}
 \end{frame}
 
 \begin{frame}{Results with $\gamma=0.02553$}
 Below, we present a comparison between the exact and the predicted solutions at different time instants t = 0.25, 0.50, 0.75. Training the network with $\gamma=0.0255$ gives prediction $\lambda_1 =
 0.986564, ~ \lambda_2 = 0.00338$ with error $\approx 0.094 \,\%$.
+{\color{red}Swap with the next slide}
 
 \begin{figure}
     \centering
-    \includegraphics[scale=0.43]{02-presentation-v1/images/burgers-exact-predict.png}
+    \includegraphics[scale=0.43]{images/burgers-exact-predict.png}
     \caption{The exact and predicted solutions of Burgers' equation in time.}
-    \label{fig:my_label}
+    \label{fig:burgers-exact-predict}
 \end{figure}
 
 \end{frame}
@@ -303,19 +321,21 @@ Below, we present a comparison between the exact and the predicted solutions at 
 Hyperparameter $\gamma$ for the optimization problem was computed via cross-validation technique, using 5 folds. 
 \begin{figure}
     \centering
-    \includegraphics[width=11cm, height=6cm]{02-presentation-v1/images/cross_val_gamma.pdf}
+    \includegraphics[width=11cm, height=6cm]{images/cross_val_gamma.pdf}
     \caption{Cross-validation result for the hyperparameter $\gamma = 0.0255$.}
-    \label{fig:my_label}
+    \label{fig:cross_val_gamma}
 \end{figure}
     
 \end{frame}
 
-\begin{frame}
+\begin{frame}{}
 
+{\color{red}On this and the next slide fix the ratio of the plots and remove
+the text about BFGS}
 Optimizing loss functions using L-BFGS (a quasi-Newton, full-batch gradient-based optimization algorithm \cite{Liu1989Nocedal}), we have got the following bootstrapped results:
 \begin{figure}
 \centering
-\includegraphics[width = 9cm , height = 6cm]{02-presentation-v1/images/bootstraped_l1.png}
+\includegraphics[width = 9cm , height = 6cm]{images/bootstraped_l1.png}
 \caption{Bootstrapped parameter $\lambda_1$ for Burgers' equation.}
 \end{figure}
 
@@ -325,9 +345,9 @@ Optimizing loss functions using L-BFGS (a quasi-Newton, full-batch gradient-base
 
 \begin{figure}
     \centering
-    \includegraphics[width = 10cm , height = 7cm]{02-presentation-v1/images/bootstraped_l2.png}
+    \includegraphics[width = 10cm , height = 7cm]{images/bootstraped_l2.png}
     \caption{Bootstrapped parameter $\lambda_1$ for Burgers' equation.}
-    \label{fig:my_label}
+    \label{fig:bootstraped_l2}
 \end{figure}
     
     
@@ -337,14 +357,14 @@ Optimizing loss functions using L-BFGS (a quasi-Newton, full-batch gradient-base
 
 Below one can see the \% error in $\lambda_1$ and $\lambda_2$ for different neural network configurations. In the first column the number of the hidden layers is presented, in the second row the number of the neurons in each hidden layer is presented.
 
-\begin{tabular}{||l|c|c|c||c|c|c||}
-    \hline
-    & \multicolumn{3}{c}{\% error in $\lambda_1$} & \multicolumn{3}{c}{\% error in $\lambda_2$} |\\
-  \hline
-  \hline
- 
-   & 5 & 10 & 20 & 5 & 10 & 20 \\
-  \hline
+{\color{red} leave only two digits after decimal point.}
+\begin{tabular}{lcccccc}
+    \toprule
+    & \multicolumn{3}{c}{\% error in $\lambda_1$} & \multicolumn{3}{c}{\% error in $\lambda_2$}\\
+  \midrule
+%  \diagcell{.2em}{1.4cm}{\tiny{Layers}}{\tiny{Neurons}}
+\diaghead{Columnmnm}{Layers}{Neurons} & 5 & 10 & 20 & 5 & 10 & 20 \\
+\midrule
   1 & 18.917 & 18.769 & 36.789 & 83.962 & 37.824 & 5.327\\
   \hline
   2 & 23.485 & 8.261 & 2.786 & 50.083 & 41.800 & 14.808\\
@@ -354,7 +374,7 @@ Below one can see the \% error in $\lambda_1$ and $\lambda_2$ for different neur
   6 & 3.832 & 2.542 & 0.413 & 1.325 & 1.902 & 1.125\\
   \hline
   8 & 9.891 & 1.094 & 2.386 & 52.670 & 4.484 & 2.645\\
-  \hline
+  \bottomrule
 \end{tabular}
     
 \end{frame}
