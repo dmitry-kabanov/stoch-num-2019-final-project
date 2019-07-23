@@ -180,12 +180,12 @@ $\ell$\textsuperscript{th} layer.
 % slide 7
 \begin{frame}
 
-Below, one can see the scheme of the neural network that we use in this project:
+Below, one can see the scheme of the general neural network:
 \begin{figure}
 \centering
-\includegraphics[width = 10cm , height = 6cm]{images/NN_scheme.png}
+\includegraphics[width = 10cm , height = 7cm]{images/FFNN.pdf}
 \\
-\caption{Figure 1. Physics informed neural network.}
+\caption{Feed forward neural network.}
 \end{figure}
 \end{frame}
 
@@ -198,50 +198,7 @@ use $tahn(z)$ as its derivative has a good behavior in the region $[-1, 1]$
 \cite{nndesign}. In total, the neural network has 10 layers. 6 of them have a
 width of 20 "neurons". Below, we will show the dependence of the resulting value
 $\lambda$ on the neural network configuration. Especially, the affection of the
-number of hidden layers in the network.
-    
-\end{frame}
-
-%slide 9 
-\begin{frame}
-
-Below, one can see the table of the output $\vec{\lambda}$ values depending on
-the network configuration for Burgers' equation. Here we have the relative
-error: $\frac{\vert \lambda_i - \lambda_{i~True}\vert}{\lambda_{i~True}},~ i =1,
-2$
-\begin{table}
-\begin{center}
-\begin{tabular}{||c | c | c | c | c||} 
-\hline
-Configuration & $\lambda_1$ & Error $\lambda_1$ & $\lambda_2$ & Error $\lambda_2$ \\ 
-\hline\hline
-[2, 10, 1] & 0.7347 & 26.527 & 0.00537 & 68.703 \\
-\hline
-[2, 20, 1] & 0.7398 & 26.0326 & 0.004882 & 53.3654 \\
-\hline
-[2, 10, 20, 1] & 0.951 &  4.89992 & 0.0044454 & 39.65582 \\
-\hline
-[2, 10, 20x2, 1] & 0.9975185 & 0.248152 & 0.003245 & 1.9329 \\
-\hline
-[2, 10, 20x3, 1] & 0.99794 &  0.20582 & 0.0032 & 0.614 \\
-\hline
-[2, 10, 20x4, 1] & 1.00022 & 0.02117 & 0.00321 & 0.2508 \\
-\hline
-[2, 10, 20x5, 1] & 0.99963 & 0.0374 & 0.003221 & 1.1881 \\
-\hline
-[2, 10, 20x6, 1] & 0.99985 & 0.01495 & 0.0031793 & 0.120 \\
-\hline
-\end{tabular}
-\caption{Table 1. Dependence of the $\vec{\lambda}$ on the number of network layers.}
-\end{center}
-\end{table}
-    
-\end{frame}
-
-%slide 10
-\begin{frame}
-
-As one can see in Table 1., the network output directly depends on the network length. 
+number of hidden layers in the network. Below, for the Burgers' equation, the dependence of the result on the neural network configuration was considered.
     
 \end{frame}
 
@@ -295,89 +252,134 @@ Training the network with $\gamma=2$ gives prediction $\widehat{\lambda} =
 
 \section{Example 2. Burgers' equation}
 
-% slide 11
-\begin{frame}
+\begin{frame}{Burgers' equation}
 In this project we are going to consider the input data of the following form of
 the Burgers' equation:
 \begin{align*}
-u_t + \lambda_1 u u_x - \lambda_2 u_{xx} &= 0,
-    \quad x \in [-1, 1], \quad t \in [0, T]\\
-u(0, x) &= -\sin(\pi x) \\
-u(t, -1) &= u(t, 1) = 0
+&u_t + \lambda_1 u u_x - \lambda_2 u_{xx} = 0, \quad x\in[-1, 1], \quad t\in[0, T]\\
+&u(0, x) = -\sin(\pi x) \\
+&u(t, -1) = u(t, 1) = 0
 \end{align*}
+
 with true values of the sought-for parameters
 \[
-    \lambda_1 = 1,  \quad \lambda_2 = (0.01 / \pi) \approx 0.318
+    \lambda_1 = 1,  \quad \lambda_2 = (0.01 / \pi) \approx 0.318.
 \]
-using the solution given on the grid $256\times100$ for $t$ and $x$, respectively.
-{\color{red}Write how many observations you take and how}
+For this problem 3700 observations were used. The optimal number of them is: $2*N^2$, where $N$ is the number of model parameters. As we have 2 input layers, 40 - units in the hidden layers and 1 output layer, we get 3700.
+
+%{\color{red}Write how many observations you take and how}
 
 \end{frame}
 
-% slide 12
-\begin{frame}
+\begin{frame}{Observations}
+\small
+The exact solution $u(t, x) = \frac{\pi \nu}{\pi \nu exp{\{\pi^2 \nu t\}} - (exp{\{\pi^2 \nu t\}} - 1) cos(\pi x)}$ is given on the uniform grid with 201 points in $x$ and 101 points in $t$. 
+\begin{figure}
+    \centering
+    \includegraphics[width=10cm, height=6cm]{02-presentation-v1/images/burgers-exact.png}
+    \caption{The exact solution of Burgers' equation and 3700 observations.}
+    \label{fig:my_label}
+\end{figure}
 
-Optimizing all loss functions using L-BFGS (a quasi-Newton, full-batch gradient-based optimization algorithm \cite{Liu1989Nocedal}), we have got the following bootstrapped results:
+\centering
+\includegraphics{images/burgers-observations}
+\end{frame}
+
+\begin{frame}{Results with $\gamma=0.02553$}
+Below, we present a comparison between the exact and the predicted solutions at different time instants t = 0.25, 0.50, 0.75. Training the network with $\gamma=0.0255$ gives prediction $\lambda_1 =
+0.986564, ~ \lambda_2 = 0.00338$ with error $\approx 0.094 \,\%$.
 
 \begin{figure}
-\centering
-\includegraphics[width = 5.7cm , height = 4cm]{images/l1_confidence.png}
-\includegraphics[width = 5.7cm , height = 4cm]{images/l2_confidence.png}
-\\
-\caption{Figure 1. Bootstrapped parameters $\lambda_1$ and $\lambda_2$ for Burgers' equation.}
+    \centering
+    \includegraphics[scale=0.43]{02-presentation-v1/images/burgers-exact-predict.png}
+    \caption{The exact and predicted solutions of Burgers' equation in time.}
+    \label{fig:my_label}
 \end{figure}
 
 \end{frame}
 
-% slide 13
 \begin{frame}
-{\color{red}What is this? It is not yours and it is not what we do}
 
-{\color{red} Learn how to use `label` and `ref` to refer to figures}
-The panel of Figure 2 shows the predicted solution u(t,x) along with the
-locations of the initial and boundary training data. This prediction is obtained
-without any sort of discretization of the spatiotemporal domain. 
-
+Hyperparameter $\gamma$ for the optimization problem was computed via cross-validation technique, using 5 folds. 
 \begin{figure}
-\centering
-\includegraphics[width = 10cm , height = 4cm]{images/predicted_sol_burgers.png}
-\\
-\caption{Figure 2. Predicted solution $u(t,x)$ along with the initial and
-boundary training data.}
+    \centering
+    \includegraphics[width=11cm, height=6cm]{02-presentation-v1/images/cross_val_gamma.pdf}
+    \caption{Cross-validation result for the hyperparameter $\gamma = 0.0255$.}
+    \label{fig:my_label}
 \end{figure}
-
-\end{frame}
-
-% slide 14
-\begin{frame}
-
-Below, we present a comparison between the exact and the predicted solutions at
-different time instants t = 0.25, 0.50, 0.75. The physics informed NN accurately
-captures the nonlinear behavior of the Burgers' equation that leads to the
-development of a sharp internal layer around t = 0.4.
-
-{\color{red}You need to say something about the learned parameters $\lambda_1$
-and $\lambda_2$ because this is what we are actually interested in}
     
+\end{frame}
+
+\begin{frame}
+
+Optimizing loss functions using L-BFGS (a quasi-Newton, full-batch gradient-based optimization algorithm \cite{Liu1989Nocedal}), we have got the following bootstrapped results:
 \begin{figure}
 \centering
-\includegraphics[width = 8cm , height = 4cm]{images/exact_pred_burgers.png}
-\\
-\caption{Figure 3. Comparison of the predicted and exact solutions
-corresponding to the three temporal snapshots depicted by the white vertical
-lines in the top panel.}
+\includegraphics[width = 9cm , height = 6cm]{02-presentation-v1/images/bootstraped_l1.png}
+\caption{Bootstrapped parameter $\lambda_1$ for Burgers' equation.}
 \end{figure}
 
 \end{frame}
 
-% slide 15
 \begin{frame}
 
-Therefore, a key property of physics informed neural networks is that they can
-be effectively trained using small data sets; a setting often encountered in the
-study of physical systems for which the cost of data acquisition may be
-prohibitive.
+\begin{figure}
+    \centering
+    \includegraphics[width = 10cm , height = 7cm]{02-presentation-v1/images/bootstraped_l2.png}
+    \caption{Bootstrapped parameter $\lambda_1$ for Burgers' equation.}
+    \label{fig:my_label}
+\end{figure}
     
+    
+\end{frame}
+
+\begin{frame}{Neural Network configuration $\lambda$ error}
+
+Below one can see the \% error in $\lambda_1$ and $\lambda_2$ for different neural network configurations. In the first column the number of the hidden layers is presented, in the second row the number of the neurons in each hidden layer is presented.
+
+\begin{tabular}{||l|c|c|c||c|c|c||}
+    \hline
+    & \multicolumn{3}{c}{\% error in $\lambda_1$} & \multicolumn{3}{c}{\% error in $\lambda_2$} |\\
+  \hline
+  \hline
+ 
+   & 5 & 10 & 20 & 5 & 10 & 20 \\
+  \hline
+  1 & 18.917 & 18.769 & 36.789 & 83.962 & 37.824 & 5.327\\
+  \hline
+  2 & 23.485 & 8.261 & 2.786 & 50.083 & 41.800 & 14.808\\
+  \hline
+  4 & 7.726 & 1.396 & 2.259 & 1.012 & 3.729 & 0.000065\\
+  \hline
+  6 & 3.832 & 2.542 & 0.413 & 1.325 & 1.902 & 1.125\\
+  \hline
+  8 & 9.891 & 1.094 & 2.386 & 52.670 & 4.484 & 2.645\\
+  \hline
+\end{tabular}
+    
+\end{frame}
+
+Below one can see the \% error in solution for different neural network configurations. In the first column the number of the hidden layers is presented, in the second row the number of the neurons in each hidden layer is presented.
+
+\begin{frame}{Neural Network solution error}
+    \begin{tabular}{||l|c|c|c||}
+        \hline
+        & \multicolumn{3}{c}{\% error in solution $u$} | \\
+        \hline
+        \hline
+        & 5 & 10 & 20  \\
+        \hline
+        1 & 0.190929 & 0.165375 & 0.123150 \\
+        \hline
+        2 & 0.075636 & 0.036284 & 0.017527 \\
+        \hline
+        4 & 0.020500 & 0.009551 & 0.008273 \\
+        \hline
+        6 & 0.014687 & 0.010844 & 0.006640 \\
+        \hline
+        8 & 0.038927 & 0.007426 & 0.008953 \\
+        \hline
+    \end{tabular}
 \end{frame}
 
 % Burgers' equation (end)
@@ -385,6 +387,8 @@ prohibitive.
 
 \begin{frame}
     \frametitle{Conclusions}
+    
+Therefore, a key property of physics informed neural networks is that they can be effectively trained using small data sets; a setting often encountered in the study of physical systems for which the cost of data acquisition may be prohibitive.
 
 \end{frame}
 
