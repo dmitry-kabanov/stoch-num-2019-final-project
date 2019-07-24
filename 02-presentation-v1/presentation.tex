@@ -186,10 +186,10 @@ $\ell$\textsuperscript{th} layer.
 % slide 7
 \begin{frame}
 
-Below, one can see the scheme of the general neural network:
+Below, one can see the general scheme of the neural network:
 \begin{figure}
 \centering
-\includegraphics[width = 10cm , height = 7cm]{images/FFNN.pdf}
+\includegraphics[width = 10cm , height = 7cm]{images/FFNN.png}
 \\
 \caption{Feed forward neural network.}
 \end{figure}
@@ -271,47 +271,24 @@ with true values of the sought-for parameters
 \[
     \lambda_1 = 1,  \quad \lambda_2 = (0.01 / \pi) \approx 0.318.
 \]
-{\color{red} The next paragraph is super heavy.
-First of all, $N$ is the number observations, do not reuse
-the letter for a different purpose.
-Call the dimension of $\theta$, for example, $M$.
-Second, explain better: in the input layer there are two
-neurons, but they do not affect $\theta$; not ``units'' but ``neurons''.
-May be, even make a separate slide on how your network
-is structured, and how the number of observations is affected.
-}
 
-For this problem 3700 observations were used. The optimal number of them is: $2*N^2$, where $N$ is the number of model parameters. As we have 2 input layers, 40 - units in the hidden layers and 1 output layer, we get 3700.
+The exact solution is
+$$u(t, x) = \frac{\pi \lambda_2}{\pi \lambda_2 e^{\{\pi^2 \lambda_2 t\}} - (e^{\{\pi^2 \lambda_2 t\}} - 1) cos(\pi x)}$$
 
-%{\color{red}Write how many observations you take and how}
+\end{frame}
 
+\begin{frame}{Burgers' equation neural network configuration}
+    For this problem 3200 observations were used. The optimal number of them is: $2*M^2$, where $M$ is the number of model parameters. As we have 4 hidden layers with 10 neurons in each. This number basically affects the underfitting and overfitting of the neural network. Below the results of the model are presented.
 \end{frame}
 
 \begin{frame}{Observations}
 \small
-{\color{red}What is $\nu$ in the below formula?}
-The exact solution $u(t, x) = \frac{\pi \nu}{\pi \nu exp{\{\pi^2 \nu t\}} - (exp{\{\pi^2 \nu t\}} - 1) cos(\pi x)}$ is given on the uniform grid with 201 points in $x$ and 101 points in $t$. 
+Below, the exact solution is depicted on the uniform grid with 201 points in $x$ and 101 points in $t$. 
 \begin{figure}
     \centering
     \includegraphics[width=10cm, height=6cm]{images/burgers-exact.png}
-    \caption{The exact solution of Burgers' equation and 3700 observations.}
+    \caption{The exact solution of Burgers' equation and 3200 observations.}
     \label{fig:my_label}
-\end{figure}
-
-\centering
-%\includegraphics{images/burgers-observations}
-\end{frame}
-
-\begin{frame}{Results with $\gamma=0.02553$}
-Below, we present a comparison between the exact and the predicted solutions at different time instants t = 0.25, 0.50, 0.75. Training the network with $\gamma=0.0255$ gives prediction $\lambda_1 =
-0.986564, ~ \lambda_2 = 0.00338$ with error $\approx 0.094 \,\%$.
-{\color{red}Swap with the next slide}
-
-\begin{figure}
-    \centering
-    \includegraphics[scale=0.43]{images/burgers-exact-predict.png}
-    \caption{The exact and predicted solutions of Burgers' equation in time.}
-    \label{fig:burgers-exact-predict}
 \end{figure}
 
 \end{frame}
@@ -328,14 +305,25 @@ Hyperparameter $\gamma$ for the optimization problem was computed via cross-vali
     
 \end{frame}
 
+\begin{frame}{Results with $\gamma=0.02553$}
+Below, we present a comparison between the exact and the predicted solutions at the different time instants t = 0.25, 0.50, 0.75. Training the network with $\gamma=0.0255$ gives prediction $\lambda_1 =
+0.986564, ~ \lambda_2 = 0.00338$ with MSE $u(x, t) \approx 0.011 \,\%$.
+
+\begin{figure}
+    \centering
+    \includegraphics[scale=0.43]{images/burgers-exact-predict.png}
+    \caption{The exact and predicted solutions of Burgers' equation in time.}
+    \label{fig:burgers-exact-predict}
+\end{figure}
+
+\end{frame}
+
 \begin{frame}{}
 
-{\color{red}On this and the next slide fix the ratio of the plots and remove
-the text about BFGS}
-Optimizing loss functions using L-BFGS (a quasi-Newton, full-batch gradient-based optimization algorithm \cite{Liu1989Nocedal}), we have got the following bootstrapped results:
+We have got the following bootstrapped results:
 \begin{figure}
 \centering
-\includegraphics[width = 9cm , height = 6cm]{images/bootstraped_l1.png}
+\includegraphics[width = 9cm , height = 7cm]{images/bootstraped_l1.png}
 \caption{Bootstrapped parameter $\lambda_1$ for Burgers' equation.}
 \end{figure}
 
@@ -345,7 +333,7 @@ Optimizing loss functions using L-BFGS (a quasi-Newton, full-batch gradient-base
 
 \begin{figure}
     \centering
-    \includegraphics[width = 10cm , height = 7cm]{images/bootstraped_l2.png}
+    \includegraphics[width = 10cm , height = 8cm]{images/bootstraped_l2.png}
     \caption{Bootstrapped parameter $\lambda_1$ for Burgers' equation.}
     \label{fig:bootstraped_l2}
 \end{figure}
@@ -357,26 +345,25 @@ Optimizing loss functions using L-BFGS (a quasi-Newton, full-batch gradient-base
 
 Below one can see the \% error in $\lambda_1$ and $\lambda_2$ for different neural network configurations. In the first column the number of the hidden layers is presented, in the second row the number of the neurons in each hidden layer is presented.
 
-{\color{red} leave only two digits after decimal point.}
-\begin{tabular}{lcccccc}
+\begin{tabular}{lccc|ccc}
     \toprule
     & \multicolumn{3}{c}{\% error in $\lambda_1$} & \multicolumn{3}{c}{\% error in $\lambda_2$}\\
   \midrule
 %  \diagcell{.2em}{1.4cm}{\tiny{Layers}}{\tiny{Neurons}}
 \diaghead{Columnmnm}{Layers}{Neurons} & 5 & 10 & 20 & 5 & 10 & 20 \\
 \midrule
-  1 & 18.917 & 18.769 & 36.789 & 83.962 & 37.824 & 5.327\\
+  1 & 19.43 & 31.82 & 25.32 & 118.02 & 79.2 & 74.33\\
   \hline
-  2 & 23.485 & 8.261 & 2.786 & 50.083 & 41.800 & 14.808\\
+  2 & 24.93 & 8.75 & 3.21 & 56.05 & 28.35 & 23.48\\
   \hline
-  4 & 7.726 & 1.396 & 2.259 & 1.012 & 3.729 & 0.000065\\
+  4 & 3.42 & 0.82 & 0.29 & 13.56 & 2.43 & 4.21\\
   \hline
-  6 & 3.832 & 2.542 & 0.413 & 1.325 & 1.902 & 1.125\\
+  6 & 3.26 & 2.16 & 1.29 & 19.53 & 2.79 & 0.66\\
   \hline
-  8 & 9.891 & 1.094 & 2.386 & 52.670 & 4.484 & 2.645\\
+  8 & 6.17 & 1.41 & 2.83 & 6.57 & 1.26 & 1.28\\
   \bottomrule
 \end{tabular}
-    
+
 \end{frame}
 
 \begin{frame}{Neural Network solution error}
@@ -384,23 +371,22 @@ Below one can see the \% error in $\lambda_1$ and $\lambda_2$ for different neur
 Below one can see the \% error in solution for different neural network configurations. In the first column the number of the hidden layers is presented, in the second row the number of the neurons in each hidden layer is presented.
 
 \centering
-    \begin{tabular}{||l|c|c|c||}
-        \hline
-        & \multicolumn{3}{c}{\% error in solution $u$} | \\
-        \hline
-        \hline
-        & 5 & 10 & 20  \\
-        \hline
-        1 & 0.190929 & 0.165375 & 0.123150 \\
-        \hline
-        2 & 0.075636 & 0.036284 & 0.017527 \\
-        \hline
-        4 & 0.020500 & 0.009551 & 0.008273 \\
-        \hline
-        6 & 0.014687 & 0.010844 & 0.006640 \\
-        \hline
-        8 & 0.038927 & 0.007426 & 0.008953 \\
-        \hline
+    \begin{tabular}{lccc}
+    \toprule
+    & \multicolumn{3}{c}{\% error in solution $u(x, t)$} \\
+    \midrule
+    \diaghead{Columnmnm}{Layers}{Neurons}& 5 & 10 & 20  \\
+    \hline
+    1 & 0.191595 & 0.159833 & 0.134457 \\
+    \hline
+    2 & 0.069515 & 0.029497 & 0.021157 \\
+    \hline
+    4 & 0.015328 & 0.010501 & 0.007361 \\
+    \hline
+    6 & 0.020529 & 0.010405 & 0.005556 \\
+    \hline
+    8 & 0.026048 & 0.008358 & 0.009048 \\
+    \bottomrule
     \end{tabular}
 \end{frame}
 
