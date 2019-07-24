@@ -104,7 +104,7 @@ optimization problem
 \begin{equation*}
     \label{eq:optim-ideal}
     \argmin_{\VLambda} \quad 
-    \log \sum_{i=1}^{N} \big[ u_i - u(x_i, t_i; \VLambda) \big]^2,
+     \sum_{i=1}^{N} \big[ u_i - u(x_i, t_i; \VLambda) \big]^2,
 \end{equation*}
 here noise variance $\sigma^2$ is a~
 nuisance parameter~\cite[section~8.2]{sivia2006data}
@@ -137,7 +137,7 @@ $\VLambda$:
 The equality constraint is difficult to satisfy exactly as
 $u_{\text{NN}}$ is an approximation of the exact solution of
 Eq.~\eqref{eq:pde}.
-Therefore, we relax the optimization problem introducing a secondary NN
+Therefore, we relax the optimization problem introducing a NN
 \begin{equation*}
     \FNN(x, t; \VLambda, \VTheta) =
         u_{\text{NN}, t} + \NonlinOp(u_{\text{NN}}; \VLambda),
@@ -145,7 +145,7 @@ Therefore, we relax the optimization problem introducing a secondary NN
 where we plug the neural network $\UNN$ into Eq.~\eqref{eq:pde} and
 require that $\FNN \approx 0$.
 
-Then both networks are trained simultaneously:
+Then the minimization problem is solving:
 \begin{equation*}
     \argmin_{\VLambda, \VTheta}
     \sum_{i=1}^N \big[ u_i - \UNN(x_i, t_i; \VTheta)\big ]^2
@@ -278,7 +278,17 @@ $$u(t, x) = \frac{\pi \lambda_2}{\pi \lambda_2 e^{\{\pi^2 \lambda_2 t\}} - (e^{\
 \end{frame}
 
 \begin{frame}{Burgers' equation neural network configuration}
-    For this problem 3200 observations were used. The optimal number of them is: $2*M^2$, where $M$ is the number of model parameters. As we have 4 hidden layers with 10 neurons in each. This number basically affects the underfitting and overfitting of the neural network. Below the results of the model are presented.
+    For this problem 3200 observations were used. The optimal number of them is: $2*M^2$, where $M$ is the number of model parameters. As we have 4 hidden layers with 10 neurons in each. This number basically affects the underfitting and overfitting of the neural network. \\
+    
+    The computational complexity according to the configuration of an NN consists of the number of matrix multiplications and the amount of the activation function use. 
+    
+\end{frame}
+
+\begin{frame}{Neural network computational complexity}
+
+    Let us denote $n^{(k)}$ the number of neurons in the k-th layer, $L$ as the number of layers. Then the number of multiplications of weights is: $$n_{mul} = \sum_{k=2}^{L} n^{(k)}n^{(k-1)}n^{(k-2)} + n^{(1)}n^{(0)}*2.$$
+    The number of activation function use is: $$n_g = \sum_{k = 1}^{L} n^{(k)}.$$ Therefore, $ \text{consumed time is} = n_{mul} + n_g = O(n^4) + O(n^2) \Longleftrightarrow O(n^4).$ 
+    
 \end{frame}
 
 \begin{frame}{Observations}
@@ -341,7 +351,7 @@ We have got the following bootstrapped results:
     
 \end{frame}
 
-\begin{frame}{Neural Network configuration $\lambda$ error}
+\begin{frame}{Neural Network configuration vs $\lambda$ error}
 
 Below one can see the \% error in $\lambda_1$ and $\lambda_2$ for different neural network configurations. In the first column the number of the hidden layers is presented, in the second row the number of the neurons in each hidden layer is presented.
 
@@ -366,7 +376,7 @@ Below one can see the \% error in $\lambda_1$ and $\lambda_2$ for different neur
 
 \end{frame}
 
-\begin{frame}{Neural Network solution error}
+\begin{frame}{Neural Network vs predicted solution error}
 
 Below one can see the \% error in solution for different neural network configurations. In the first column the number of the hidden layers is presented, in the second row the number of the neurons in each hidden layer is presented.
 
