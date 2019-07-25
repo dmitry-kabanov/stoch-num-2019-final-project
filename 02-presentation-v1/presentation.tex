@@ -67,20 +67,30 @@
 \end{frame}
 
 %slide 2
-\begin{frame}{Introduction to the problem}
+\begin{frame}{Inverse problem}
 
-The main goal fo our project is:
-
-Given data $\vec{D} = \{t_i, x_i, u_i\},`~i = 1, ..., N,$ observed from the solution of PDE of the form
+Consider data
+\[
+    \vec{D} = \left\{(t_i, x_i), u_i\right\}, \quad i = 1, ..., N
+\]
+observed from the
+model given by a partial differential equation of the form
 \begin{equation*}
     \label{eq:pde}
-    u_t + \mathcal N\!(u; \VLambda) = 0,
+    u_t + \mathcal N\!(u; {\color{red}\VLambda}) = 0,
 \end{equation*}
-estimate $\VLambda$.
+with some initial and boundary conditions and \textbf{unknown} {\color{red}$\VLambda$}
 
-Here $u=u(x, t)$ is the solution of the equation,
-$\NonlinOp(u; \VLambda)$ a nonlinear algebraic-differential operator,
-$\VLambda$ the vector of unknown parameters.
+{
+\vspace{0.5cm}
+\centering
+\textbf{Goal}: estimate {\color{red}$\VLambda$}\par
+}
+
+\vspace{1cm}
+$u=u(x, t)$ the solution of the equation (observations)\\
+$\NonlinOp(u; \VLambda)$ a nonlinear algebraic-differential operator \\
+$\VLambda$ the vector of unknown parameters
 
 \end{frame}
 
