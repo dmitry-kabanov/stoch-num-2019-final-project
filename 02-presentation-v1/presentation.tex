@@ -145,7 +145,7 @@ Therefore, we relax the optimization problem introducing a NN
 where we plug the neural network $\UNN$ into Eq.~\eqref{eq:pde} and
 require that $\FNN \approx 0$.
 
-Then the minimization problem is solving:
+Then we solve the minimization problem:
 \begin{equation*}
     \argmin_{\VLambda, \VTheta}
     \sum_{i=1}^N \big[ u_i - \UNN(x_i, t_i; \VTheta)\big ]^2
@@ -153,7 +153,7 @@ Then the minimization problem is solving:
 \end{equation*}
 where $\gamma$ is an extra hyperparameter that controls the importance of the
 penalty term.
-This parameter $\gamma$ is chosen via cross-validation and bayesian regularization.
+This parameter $\gamma$ is chosen via cross-validation.
     
 \end{frame}
 
@@ -171,7 +171,7 @@ where
 Here 
 \begin{itemize}
     \item $L$  - is the number of layers in the network,
-    \item 0 layer and $L$ layer are input and output layers, respectively,
+    \item 0s layer and $L$-th layer are input and output layers, respectively,
     \item layers from 1 to $L-1$ - are hidden layers,
     \item $\sigma = \tanh (z) $ - is a nonlinear activation function applied componentwise.
 \end{itemize} 
@@ -199,13 +199,8 @@ Below, one can see the general scheme of the neural network:
 \begin{frame}
 
 As one can see on the Figure 1., we use the first layer as input data driven
-form the equation (1). As an activation function, we use $\sigma = tanh(z)$. We
-use $tahn(z)$ as its derivative has a good behavior in the region $[-1, 1]$
-\cite{nndesign}. In total, the neural network has 10 layers. 6 of them have a
-width of 20 "neurons". Below, we will show the dependence of the resulting value
-$\lambda$ on the neural network configuration. Especially, the affection of the
-number of hidden layers in the network. Below, for the Burgers' equation, the dependence of the result on the neural network configuration was considered.
-    
+form the equation (1). As an activation function, we use $tanh(z)$. The depth of the model and the width of everyy layer depends on the amount of data we have. Below, we have considere the affection of the neural network configuration on the resulting values, such as solution function u(x, t) and $\lambda$s.
+
 \end{frame}
 
 % Common part (end)
