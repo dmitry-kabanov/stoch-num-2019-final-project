@@ -247,22 +247,29 @@ form the equation (1). As an activation function, we use $tanh(z)$. The depth of
 \section{Example 1. Heat equation}
 
 \begin{frame}{Heat equation}
-    We consider the linear heat equation with homogeneous Dirichlet boundary
-    conditions
+We consider the linear heat equation
 \begin{align*}
-    &u_t - \lambda u_xx - g(x, t) = 0, \quad x\in[-1; 1], \quad t\in[0, 1] \\
+    &u_t - {\color{red}\lambda} u_{xx} - g(x, t) = 0, \quad x\in[-1; 1], \quad t\in[0, 1] \\
     &u(x, 0) = 0 \\
-    &u(0, x) = u(1, x) = 0
+    &u(0, t) = u(1, t) = 0
 \end{align*}
-with source term $g(x, t) = (4\pi^2 -1) \, \sin(2\pi x) \, \exp(-t)$.
+with source term $g(x, t) = (4\pi^2 -1) \, \sin(2\pi x) \, \exp(-t)$
 
-True value of $\lambda$ is 1.
+\vspace{0.5cm}
+True $\lambda$ is 1
+
+Exact solution: $\quad u = \sin(2\pi x) \, \exp(-t)$
 \end{frame}
 
 \begin{frame}{Observations}
-The exact solution $u = \sin(2\pi x) \, \exp(-t)$ is given on the uniform grid
-with 201 points in $x$ and 101 points in $t$. 
-We sample 3200 observations uniformly.
+1. Compute $u$ on the uniform grid with $201\times101$ points in $x\times t$\\
+2. Network complexity [2, 20, 20, 1]: 2 hidden layers with 20 neurons in each\\
+3. In total $2\times20 + 20 + 20\times20 + 20 + 20\times1+1=501$ parameters in $\VTheta$!
+4. Sample 6400 observations uniformly\\
+5. Large number of observations allows to avoid overfitting.
+\end{frame}
+
+\begin{frame}{Observations}
 
 \centering
 \includegraphics{images/heateq-observations}
