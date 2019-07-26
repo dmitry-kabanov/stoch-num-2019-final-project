@@ -225,6 +225,15 @@ form the equation (1). As an activation function, we use $tanh(z)$. The depth of
 
 \end{frame}
 
+\begin{frame}{Why neural network is better than solving full PDE problem?}
+Neural network must be evaluated only at the observation points\\
+PDE problem must be computed on a grid, which includes observation points as a subset
+\end{frame}
+
+\begin{frame}{Neural network computational complexity}
+    Let us denote $n^{(k)}$ the number of neurons in the $k$th layer, $L$ as the number of layers. Then the number of multiplications of weights is: $$n_{mul} = \sum_{k=2}^{L} n^{(k)}n^{(k-1)}n^{(k-2)} + n^{(1)}n^{(0)}*2.$$
+    The number of activation function use is: $$n_g = \sum_{k = 1}^{L} n^{(k)}.$$ Therefore, $ \text{consumed time is} = n_{mul} + n_g = O(n^4) + O(n^2) \Longleftrightarrow O(n^4).$ 
+\end{frame}
 
 \begin{frame}{Hyperparameter $\gamma$ is chosen via $K$-fold cross-validation}
 \begin{equation*}
