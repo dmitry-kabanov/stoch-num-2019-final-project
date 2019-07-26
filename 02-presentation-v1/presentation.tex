@@ -13,6 +13,9 @@
 \usepackage{makecell}
 \usepackage{tikz}
 
+\usepackage[beamer,customcolors]{hf-tikz}
+\usetikzlibrary{calc}
+
 % This block allows to include images and bib files relative to this TeX file.
 %\newcommand{\PathToTexFile}{02-presentation-v1}
 %\graphicspath{\PathToTexFile}
@@ -220,6 +223,18 @@ Below, one can see the general scheme of the neural network:
 As one can see on the Figure 1., we use the first layer as input data driven
 form the equation (1). As an activation function, we use $tanh(z)$. The depth of the model and the width of every layer depends on the amount of data we have. Below, we have considered the affection of the neural network configuration on the resulting values, such as solution function u(x, t) and $\lambda$s.
 
+\end{frame}
+
+
+\begin{frame}{Hyperparameter $\gamma$ is chosen via $K$-fold cross-validation}
+\begin{equation*}
+    \argmin_{\VLambda, \VTheta}
+    \sum_{i=1}^N \big[ u_i - \UNN(x_i, t_i; \VTheta)\big ]^2 \enspace + \enspace
+    \tikzmarkin<1>[set fill color=CBlue, set border color=CBlueD]{gamma}\gamma
+    \tikzmarkend{gamma}
+    \,
+    \sum_{i=1}^N \big[ \FNN(x_i, t_i; \VLambda, \VTheta) \big]^2,
+\end{equation*}
 \end{frame}
 
 % Common part (end)
