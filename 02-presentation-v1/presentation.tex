@@ -273,7 +273,7 @@ Exact solution: $\quad u = \sin(2\pi x) \, \exp(-t)$
 \begin{frame}{Observations}
 1. Compute $u$ on the uniform grid with $201\times101$ points in $x\times t$\\
 2. Network complexity [2, 20, 20, 1]: 2 hidden layers with 20 neurons in each\\
-3. In total $2\times20 + 20 + 20\times20 + 20 + 20\times1+1=501$ parameters in $\VTheta$!
+3. In total $2\times20 + 20 + 20\times20 + 20 + 20\times1+1=501$ parameters in $\VTheta$\\
 4. Sample 6400 observations uniformly\\
 5. Large number of observations allows to avoid overfitting.
 \end{frame}
@@ -286,7 +286,7 @@ Exact solution: $\quad u = \sin(2\pi x) \, \exp(-t)$
 
 \begin{frame}{Cross-validation for $\gamma$}
 \centering
-Clean data
+Clean data: just exact solution
 
 \includegraphics{images/heateq-cross-validation}
 \end{frame}
@@ -298,8 +298,16 @@ Noisy data: $\quad u_{\text{obs}} = u +  N(0, \sigma^2), \quad \sigma=0.05 \sqrt
 \includegraphics{images/heateq-cross-validation-with-noise}
 \end{frame}
 
+
+\begin{frame}{Cross-validation for $\gamma$}
+    For given neural network, results are insensitive to the value of $\gamma$
+    for $\gamma$ less than $\approx 2$\\
+    At least for the present problem
+
+\end{frame}
+
 \begin{frame}{Bootstrap}
-Computing... To be finished
+Still computing... To be finished
 \end{frame}
 
 \begin{frame}{Preliminary results with $\gamma=2$}
@@ -344,13 +352,6 @@ $$u(t, x) = \frac{\pi \lambda_2}{\pi \lambda_2 e^{\{\pi^2 \lambda_2 t\}} - (e^{\
     For this problem 3200 observations were used. The optimal number of them is: $2*M^2$, where $M$ is the number of model parameters. As we have 4 hidden layers with 10 neurons in each. This number basically affects the underfitting and overfitting of the neural network. \\
     
     The computational complexity according to the configuration of an NN consists of the number of matrix multiplications and the amount of the activation function use. 
-    
-\end{frame}
-
-\begin{frame}{Neural network computational complexity}
-
-    Let us denote $n^{(k)}$ the number of neurons in the $k$th layer, $L$ as the number of layers. Then the number of multiplications of weights is: $$n_{mul} = \sum_{k=2}^{L} n^{(k)}n^{(k-1)}n^{(k-2)} + n^{(1)}n^{(0)}*2.$$
-    The number of activation function use is: $$n_g = \sum_{k = 1}^{L} n^{(k)}.$$ Therefore, $ \text{consumed time is} = n_{mul} + n_g = O(n^4) + O(n^2) \Longleftrightarrow O(n^4).$ 
     
 \end{frame}
 
