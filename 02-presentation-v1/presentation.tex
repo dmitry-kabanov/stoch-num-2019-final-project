@@ -239,9 +239,12 @@ Neural network must be evaluated only at the observation points\\
 PDE problem must be computed on a grid, which includes observation points as a subset
 \end{frame}
 
-\begin{frame}{Neural network computational complexity}
+\begin{frame}{Neural network rough computational complexity}
     Let us denote $n^{(k)}$ the number of neurons in the $k$th layer, $L$ as the number of layers. Then the number of multiplications of weights is: $$n_{mul} = \sum_{k=2}^{L} n^{(k)}n^{(k-1)}n^{(k-2)} + n^{(1)}n^{(0)}*2.$$
-    The number of activation function use is: $$n_g = \sum_{k = 1}^{L} n^{(k)}.$$ Therefore, $ \text{ the computational complexity is } = n_{mul} + n_g = O(n^4) + O(n^2) \Longleftrightarrow O(n^4).$ 
+    The number of activation function use is: $$n_g = \sum_{k = 1}^{L} n^{(k)}.$$     
+    Then, we assume that matrices are quadratic and there the same number of neurons, and $L = n$:
+    $$n_{mul} = L*n^3 = n^4, ~ n_g = L*n = n^2.$$
+    Therefore, $ \text{ the computational complexity is } = n_{mul} + n_g = O(n^4) + O(n^2) \Longleftrightarrow O(n^4).$ 
 \end{frame}
 
 \begin{frame}{Hyperparameter $\gamma$ is chosen via $K$-fold cross-validation}
@@ -543,7 +546,7 @@ Below one can see the \% error in $\lambda_1$ and $\lambda_2$ for different neur
   \hline
   4 & 3.42 & 0.82 & 0.29 & 13.56 & 2.43 & 4.21\\
   \hline
-  6 & 3.26 & 2.16 & 1.29 & 19.53 & 2.79 & 0.66\\
+  6 & 3.26 & 2.16 & \textcolor{red}{1.29} & 19.53 & 2.79 & \textcolor{red}{0.66}\\
   \hline
   8 & 6.17 & 1.41 & 2.83 & 6.57 & 1.26 & 1.28\\
   \bottomrule
@@ -562,15 +565,15 @@ Below one can see the \% error in solution for different neural network configur
     \midrule
     \diaghead{Columnmnm}{Layers}{Neurons}& 5 & 10 & 20  \\
     \hline
-    1 & 0.191595 & 0.159833 & 0.134457 \\
+    1 & 19.16 & 15.98 & 13.45 \\
     \hline
-    2 & 0.069515 & 0.029497 & 0.021157 \\
+    2 & 6.95 & 2.95 & 2.12 \\
     \hline
-    4 & 0.015328 & 0.010501 & 0.007361 \\
+    4 & 1.53 & 1.05 & 0.74 \\
     \hline
-    6 & 0.020529 & 0.010405 & 0.005556 \\
+    6 & 2.05 & 1.04 & \textcolor{red}{0.56} \\
     \hline
-    8 & 0.026048 & 0.008358 & 0.009048 \\
+    8 & 2.61 & 0.84 & 0.91 \\
     \bottomrule
     \end{tabular}
     
