@@ -150,7 +150,7 @@ optimization problem
 
 % slide 4
 \begin{frame}
-% maybe include the approximate comp complexit of the analytical 
+% maybe include the approximate comp complexity of the analytical 
 % solution
 Analytical solution of the optimization problem~\eqref{eq:optim-ideal} can be expensive, so 
 we replace  $u(x_i, t_i; \VLambda)$ with a 
@@ -253,7 +253,7 @@ PDE problem must be computed on a grid, which includes observation points as a s
 \end{equation*}
 \vspace{0.5cm}
 
-In a usuall case, regularization parameter is used to "punish" big values of a model parameters $\vec{\theta}$, that lead to the overfitting, of the neural network. In our case, we use it as a constrait for the model. 
+In a usual case, regularization parameter is used to "punish" big values of a model parameters $\vec{\theta}$, that lead to the overfitting, of the neural network. In our case, we use it as a constraint for the model. 
 
 \end{frame}
 
@@ -262,7 +262,7 @@ In a usuall case, regularization parameter is used to "punish" big values of a m
     \vspace{0.5cm}
     1) split the observed data $\vec{D} = \left\{(t_i, x_i), u_i\right\}, \quad i = 1, ..., N$ into $k = 5$ folds.\\
     \vspace{0.5cm}
-    2) Repeate k times for a chosen $\gamma$ value: \\
+    2) Repeat k times for a chosen $\gamma$ value: \\
         \quad - train the neural network on $k - 1$ folds\\
         \quad - test on the left part\\
         \quad - average the results over all $k$ folds.\\
@@ -275,7 +275,7 @@ In a usuall case, regularization parameter is used to "punish" big values of a m
     \vspace{0.5cm}
     \quad - Set training and test data.\\
     Repeat for a several times $T$ the following steps:\\
-    \quad - Choose 80\% of the setted data and use it for training and testing the model. \\
+    \quad - Choose 80\% of the sample data and use it for training and testing the model. \\
     \quad - Store the resulting $\vec{\lambda}$.\\
     \vspace{0.5cm}
     Results of bootstrap are given below for each problem.
