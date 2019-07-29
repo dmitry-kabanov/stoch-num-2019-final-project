@@ -7,6 +7,18 @@
 \usefonttheme{professionalfonts}
 \usefonttheme[onlymath]{serif}
 
+\overfullrule=2cm
+
+\setbeamertemplate{footline}{%
+  \begin{beamercolorbox}[wd=\textwidth, sep=1ex]{footline}%
+    \usebeamerfont{page number in head/foot}%
+    \usebeamertemplate*{frame footer}
+    \hfill%
+    \usebeamertemplate*{frame numbering}
+    \quad% 
+  \end{beamercolorbox}%
+}
+
 % Table packages.
 \usepackage{booktabs}
 
