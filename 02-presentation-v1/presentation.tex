@@ -1,4 +1,4 @@
-we\documentclass{beamer}
+\documentclass{beamer}
 \usepackage{amsmath}
 \usetheme[numbering=fraction]{metropolis}
 \usepackage[T1]{fontenc}
@@ -96,7 +96,7 @@ with some initial and boundary conditions and \textbf{unknown} {\color{red}$\VLa
 \textbf{Goal}: estimate {\color{red}$\VLambda$}\par
 }
 
-\vspace{1cm}
+\vspace{0.5cm}
 $u=u(x, t)$ the solution of the equation (observations)\\
 $\NonlinOp(u; \VLambda)$ a nonlinear algebraic-differential operator \\
 $\VLambda$ the vector of unknown parameters
@@ -106,45 +106,43 @@ $\VLambda$ the vector of unknown parameters
 %slide 3
 \begin{frame}
 
-By Bayes' rule, the optimal value of $\VLambda$ is found through
-maximization of the posterior distribution \cite{sivia2006data}
+The optimal $\VLambda$ found through
+maximization of the posterior distribution (Bayes' rule) \cite{sivia2006data}
 \begin{equation*}
     \rho( \VLambda | \Data ) \propto
     \rho( \Data | \VLambda ) \times \rho( \VLambda ).
 \end{equation*}
 
 Furthermore, we assume
-\begin{equation*}
-    u_i = u(x_i, t_i; \VLambda) + \epsilon_i, \quad i=1, \dots, N,
-\end{equation*}
-where $\epsilon_i \sim N(0, \sigma^2)$, and assign uninformative prior for $\VLambda$
-\begin{equation*}
-    \rho(\vec{\lambda}) = \text{const} \quad \text{ for all } \vec{\lambda},
-\end{equation*}
+\begin{align*}
+    & 1)~ u_i = u(x_i, t_i; \VLambda) + \epsilon_i, \quad i=1, \dots, N, \quad \epsilon_i \sim N(0, \sigma^2),\\
+    & 2) \text{ for all } \vec{\lambda} \text{ prior for } \VLambda : \quad \rho(\vec{\lambda}) = \text{const},
+\end{align*}
 so that, the problem of finding $\VLambda$ is a nonlinear unconstrained
 optimization problem
 \begin{equation*}
     \label{eq:optim-ideal}
     \argmin_{\VLambda} \quad 
-    \sum_{i=1}^{N} \big[ u_i - u(x_i, t_i; \VLambda) \big]^2,
+    \sum_{i=1}^{N} \big[ u_i - u(x_i, t_i; \VLambda) \big]^2, 
 \end{equation*}
-here noise variance $\sigma^2$ is a~
-nuisance parameter~\cite[section~8.2]{sivia2006data}
+%here noise variance $\sigma^2$ is a~
+%nuisance parameter~\cite[section~8.2]{sivia2006data}
     
 \end{frame}
 
 % slide 4
 \begin{frame}
-
-Analytical solution of the optimization problem~\eqref{eq:optim-ideal} can be expensive, so following \cite{raissi2017pinnII}
+% maybe include the approximate comp complexit of the analytical 
+% solution
+Analytical solution of the optimization problem~\eqref{eq:optim-ideal} can be expensive, so 
 we replace  $u(x_i, t_i; \VLambda)$ with a 
-feedforward neural network \cite{goodfellow2016deep}. The description of the neural network will be presented in the slides below.
+feedforward neural network \cite{goodfellow2016deep, raissi2017pinnII}.
 
-Furthermore, to ensure that $\UNN( x, t; \VTheta)$
-is close to the exact solution of Eq.~\eqref{eq:pde}, we formulate the problem of estimating of the unknown parameters
+To ensure that $\UNN( x, t; \VTheta)$
+is close to the exact solution of Eq.~\eqref{eq:pde}, we set the problem of estimating of the unknown parameters
 $\VLambda$:
 \begin{subequations}
-\label{eq:optim}
+\label{eq:optim-final}
 \begin{align*}
     &\argmin_{\VLambda, \VTheta} \quad \ \ 
         \sum_{i=1}^N \big[u_i - \UNN(x_i, t_i; \VTheta)\big]^2  \\
@@ -156,7 +154,7 @@ $\VLambda$:
 
 % slide 5
 \begin{frame}
-The equality constraint is difficult to satisfy exactly as
+It is difficult to satisfy Eq.~\eqref{eq:optim-final} exactly as
 $u_{\text{NN}}$ is an approximation of the exact solution of
 Eq.~\eqref{eq:pde}.
 Therefore, we relax the optimization problem introducing a NN
@@ -167,15 +165,13 @@ Therefore, we relax the optimization problem introducing a NN
 where we plug the neural network $\UNN$ into Eq.~\eqref{eq:pde} and
 require that $\FNN \approx 0$.
 
-Then we solve the minimization problem:
+As a result, we solve the minimization problem:
 \begin{equation*}
     \argmin_{\VLambda, \VTheta}
     \sum_{i=1}^N \big[ u_i - \UNN(x_i, t_i; \VTheta)\big ]^2
     +\gamma \sum_{i=1}^N \big[ \FNN(x_i, t_i; \VLambda, \VTheta) \big]^2,
 \end{equation*}
-where $\gamma$ is an extra hyperparameter that controls the importance of the
-penalty term.
-This parameter $\gamma$ is chosen via cross-validation.
+here $\gamma$ is a regularization hyperparameter that is chosen via cross-validation.
     
 \end{frame}
 
@@ -211,18 +207,11 @@ $\ell$\textsuperscript{th} layer.
 Below, one can see the general scheme of the neural network:
 \begin{figure}
 \centering
+\label{fig:network}
 \includegraphics[width = 10cm , height = 7cm]{images/FFNN.png}
 \\
 \caption{Feed forward neural network.}
 \end{figure}
-\end{frame}
-
-%slide 8
-\begin{frame}
-
-As one can see on the Figure 1., we use the first layer as input data driven
-form the equation (1). As an activation function, we use $tanh(z)$. The depth of the model and the width of every layer depends on the amount of data we have. Below, we have considered the affection of the neural network configuration on the resulting values, such as solution function u(x, t) and $\lambda$s.
-
 \end{frame}
 
 \begin{frame}{Why neural network is better than solving full PDE problem?}
@@ -232,7 +221,7 @@ PDE problem must be computed on a grid, which includes observation points as a s
 
 \begin{frame}{Neural network computational complexity}
     Let us denote $n^{(k)}$ the number of neurons in the $k$th layer, $L$ as the number of layers. Then the number of multiplications of weights is: $$n_{mul} = \sum_{k=2}^{L} n^{(k)}n^{(k-1)}n^{(k-2)} + n^{(1)}n^{(0)}*2.$$
-    The number of activation function use is: $$n_g = \sum_{k = 1}^{L} n^{(k)}.$$ Therefore, $ \text{consumed time is} = n_{mul} + n_g = O(n^4) + O(n^2) \Longleftrightarrow O(n^4).$ 
+    The number of activation function use is: $$n_g = \sum_{k = 1}^{L} n^{(k)}.$$ Therefore, $ \text{ the computational complexity is } = n_{mul} + n_g = O(n^4) + O(n^2) \Longleftrightarrow O(n^4).$ 
 \end{frame}
 
 \begin{frame}{Hyperparameter $\gamma$ is chosen via $K$-fold cross-validation}
@@ -244,6 +233,34 @@ PDE problem must be computed on a grid, which includes observation points as a s
     \,
     \sum_{i=1}^N \big[ \FNN(x_i, t_i; \VLambda, \VTheta) \big]^2,
 \end{equation*}
+\vspace{0.5cm}
+
+In a usuall case, regularization parameter is used to "punish" big values of a model parameters $\vec{\theta}$, that lead to the overfitting, of the neural network. In our case, we use it as a constrait for the model. 
+
+\end{frame}
+
+\begin{frame}{Cross-validation (CV) algorithm}
+    We use CV in order to validate the regularization hyperparameter $\vec{\gamma}$.\\
+    \vspace{0.5cm}
+    1) split the observed data $\vec{D} = \left\{(t_i, x_i), u_i\right\}, \quad i = 1, ..., N$ into $k = 5$ folds.\\
+    \vspace{0.5cm}
+    2) Repeate k times for a chosen $\gamma$ value: \\
+        \quad - train the neural network on $k - 1$ folds\\
+        \quad - test on the left part\\
+        \quad - average the results over all $k$ folds.\\
+    \vspace{0.5cm}
+    3) Choose the result with the least MSE.
+\end{frame}
+
+\begin{frame}{Bootstrapping parameters $\vec{\lambda}$}
+    In this work, model parameter $\vec{\lambda}$ is estimated using bootstrap technique:\\
+    \vspace{0.5cm}
+    \quad - Set training and test data.\\
+    Repeat for a several times $T$ the following steps:\\
+    \quad - Choose 80\% of the setted data and use it for training and testing the model. \\
+    \quad - Store the resulting $\vec{\lambda}$.\\
+    \vspace{0.5cm}
+    Results of bootstrap are given below for each problem.
 \end{frame}
 
 % Common part (end)
@@ -330,8 +347,7 @@ Training the network with $\gamma=2$ gives prediction $\widehat{\lambda} =
 \section{Example 2. Burgers' equation}
 
 \begin{frame}{Burgers' equation}
-In this project we are going to consider the input data of the following form of
-the Burgers' equation:
+We consider the input data of the Burgers' equation:
 \begin{align*}
 &u_t + \lambda_1 u u_x - \lambda_2 u_{xx} = 0, \quad x\in[-1, 1], \quad t\in[0, T]\\
 &u(0, x) = -\sin(\pi x) \\
@@ -372,9 +388,22 @@ Below, the exact solution is depicted on the uniform grid with 201 points in $x$
 Hyperparameter $\gamma$ for the optimization problem was computed via cross-validation technique, using 5 folds. 
 \begin{figure}
     \centering
-    \includegraphics[width=11cm, height=6cm]{images/cross_val_gamma.pdf}
+    \includegraphics[width=11cm, height=6cm]{images/burgers-cross_val_gamma.png}
     \caption{Cross-validation result for the hyperparameter $\gamma = 0.0255$.}
     \label{fig:cross_val_gamma}
+\end{figure}
+
+\end{frame}
+
+\begin{frame}
+
+Hyperparameter $\gamma$ for noisy data: $u_{obs} = u + N(0, \sigma^2),$ $\sigma = 0.05\sqrt{u}.$ 
+
+\begin{figure}
+    \centering
+    \includegraphics[width=11cm, height=6cm]{images/burgers-cross_val_gamma_noisy.png}
+    \caption{Cross-validation result for the hyperparameter $\gamma = 0.0255$ on the noisy data.}
+    \label{fig:cross_val_gamma_noisy}
 \end{figure}
     
 \end{frame}
@@ -397,7 +426,7 @@ Below, we present a comparison between the exact and the predicted solutions at 
 We have got the following bootstrapped results:
 \begin{figure}
 \centering
-\includegraphics[width = 9cm , height = 7cm]{images/bootstraped_l1.png}
+\includegraphics[width = 9cm , height = 7cm]{images/burgers-bootstraped_l1.png}
 \caption{Bootstrapped parameter $\lambda_1$ for Burgers' equation.}
 \end{figure}
 
@@ -407,8 +436,8 @@ We have got the following bootstrapped results:
 
 \begin{figure}
     \centering
-    \includegraphics[width = 10cm , height = 8cm]{images/bootstraped_l2.png}
-    \caption{Bootstrapped parameter $\lambda_1$ for Burgers' equation.}
+    \includegraphics[width = 10cm , height = 8cm]{images/burgers-bootstraped_l2.png}
+    \caption{Bootstrapped parameter $\lambda_2$ for Burgers' equation.}
     \label{fig:bootstraped_l2}
 \end{figure}
     
@@ -442,7 +471,7 @@ Below one can see the \% error in $\lambda_1$ and $\lambda_2$ for different neur
 
 \begin{frame}{Neural Network vs predicted solution error}
 
-Below one can see the \% error in solution for different neural network configurations. In the first column the number of the hidden layers is presented, in the second row the number of the neurons in each hidden layer is presented.
+Below one can see the \% error in solution for different neural network configurations. 
 
 \centering
     \begin{tabular}{lccc}
@@ -462,6 +491,8 @@ Below one can see the \% error in solution for different neural network configur
     8 & 0.026048 & 0.008358 & 0.009048 \\
     \bottomrule
     \end{tabular}
+    
+    From the results above one can see that the optimal configuration of the model is: 6 hidden layers with 20 neurons in each.
 \end{frame}
 
 % Burgers' equation (end)
