@@ -49,6 +49,7 @@
 \colorlet{CBlueD}{blue!50!gray}
 \colorlet{CRed}{red!15}
 \colorlet{CRedD}{red!50!gray}
+\colorlet{COrange}{orange}
 
 \usepackage[protrusion,expansion,kerning,spacing,final]{microtype}
 \microtypecontext{spacing=nonfrench}
@@ -247,28 +248,90 @@ PDE problem must be computed on a grid, which includes observation points as a s
 \begin{equation*}
     \argmin_{\VLambda, \VTheta}
     \sum_{i=1}^N \big[ u_i - \UNN(x_i, t_i; \VTheta)\big ]^2 \enspace + \enspace
-    \tikzmarkin<1>[set fill color=CBlue, set border color=CBlueD]{gamma}\gamma
+    \tikzmarkin<1->[set fill color=CRed, set border color=CRedD]{gamma}\gamma
     \tikzmarkend{gamma}
     \,
-    \sum_{i=1}^N \big[ \FNN(x_i, t_i; \VLambda, \VTheta) \big]^2,
+    \sum_{i=1}^N \big[ \FNN(x_i, t_i; \VLambda, \VTheta) \big]^2
 \end{equation*}
-\vspace{0.5cm}
 
-In a usual case, regularization parameter is used to "punish" big values of a model parameters $\vec{\theta}$, that lead to the overfitting, of the neural network. In our case, we use it as a constraint for the model. 
+Parameter $\gamma$ controls the balance between matching the data and satisfying
+the model constraint.
+
+\onslide<2>{
+\begin{center}
+\usebeamerfont*{frametitle}
+How to choose the best $\gamma$?
+\end{center}
+
+Discretize $\gamma\in\R$ in some range and choose the
+optimal value through the $K$-fold cross-validation.
+}
 
 \end{frame}
 
-\begin{frame}{Cross-validation (CV) algorithm}
-    We use CV in order to validate the regularization hyperparameter $\vec{\gamma}$.\\
-    \vspace{0.5cm}
-    1) split the observed data $\vec{D} = \left\{(t_i, x_i), u_i\right\}, \quad i = 1, ..., N$ into $k = 5$ folds.\\
-    \vspace{0.5cm}
-    2) Repeat k times for a chosen $\gamma$ value: \\
-        \quad - train the neural network on $k - 1$ folds\\
-        \quad - test on the left part\\
-        \quad - average the results over all $k$ folds.\\
-    \vspace{0.5cm}
-    3) Choose the result with the least MSE.
+\begin{frame}{Hyperparameter $\gamma$ is chosen via $K$-fold cross-validation}
+\begin{minipage}{\textwidth}
+\centering
+\begin{tikzpicture}[xscale=1.5, yscale=0.5, ultra thick]
+    \node [scale=1] at (0.45, 1.5) {Validation};
+    \draw [thick] (0.05, 1.05) -- (0.05, 1.15) -- (0.95, 1.15) -- (0.95, 1.05);
+    \node [scale=1] at (3.0, 1.5) {Train};
+    \draw [thick] (1.05, 1.05) -- (1.05, 1.15) -- (4.95, 1.15) -- (4.95, 1.05);
+
+    \node [scale=1] at (-0.7, 0.5) {$k = 1$};
+    \draw [fill=COrange] (0, 0) rectangle (1, 1);
+    \draw                (1, 0) rectangle (2, 1);
+    \draw                (2, 0) rectangle (3, 1);
+    \draw                (3, 0) rectangle (4, 1);
+    \draw                (4, 0) rectangle (5, 1);
+
+    \node [scale=1] at (-0.7, -1.0) {$k = 2$};
+    \draw                (0, -1.5) rectangle (1, -0.5);
+    \draw [fill=COrange] (1, -1.5) rectangle (2, -0.5);
+    \draw                (2, -1.5) rectangle (3, -0.5);
+    \draw                (3, -1.5) rectangle (4, -0.5);
+    \draw                (4, -1.5) rectangle (5, -0.5);
+
+    \node [scale=1] at (1.5, -2.0) {$\dots \qquad \qquad \dots \qquad \qquad \dots$};
+
+    \node [scale=1] at (-0.7, -3.0) {$k = K$};
+    \draw                (0, -3.5) rectangle (1, -2.5);
+    \draw                (1, -3.5) rectangle (2, -2.5);
+    \draw                (2, -3.5) rectangle (3, -2.5);
+    \draw                (3, -3.5) rectangle (4, -2.5);
+    \draw [fill=COrange] (4, -3.5) rectangle (5, -2.5);
+\end{tikzpicture}
+\end{minipage}
+
+% \begin{columns}
+%     \begin{column}{0.48\textwidth}
+%     For given $\gamma$:\\
+%     1. Split the data in $K = 5$ folds\\
+%     \vspace{0.5cm}
+%     \end{column}
+%     \begin{column}{0.48\textwidth}
+%     2. Repeat $k$ times for a given $\gamma$: \\
+%         \quad - train the neural network on ``white'' folds\\
+%         \quad - compute prediction error on ``orange'' fold\\
+%         \quad - average the results over all $K$ folds.\\
+%     \vspace{0.5cm}
+%     3. Repeat for discrete $\gamma$ in some range.
+%     3) Choose the result with the least MSE.
+%     \end{column}
+% \end{columns}
+\vspace{0.5cm}
+For given $\gamma$ in some range:\\
+\begin{enumerate}
+\item Split the data in $K = 5$ folds
+\item Repeat $K$ times:\
+    \begin{itemize}
+    \item train the neural network on ``white'' folds
+    \item compute prediction error on ``orange'' fold
+    \item average the results over all $K$ folds
+    \end{itemize}
+\end{enumerate}
+
+Choose the result with the minimal averaged prediction error.
 \end{frame}
 
 \begin{frame}{Bootstrapping parameters $\vec{\lambda}$}
