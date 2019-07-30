@@ -255,5 +255,6 @@ pyDOE-master/
 # Ignore .vscode artefacts.
 .vscode/
 
-# Ignore submitted scope versions and comments.
+# Ignore submitted versions and comments.
 01-scope/versions
+02-presentation-v1/versions
