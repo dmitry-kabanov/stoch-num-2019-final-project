@@ -391,14 +391,30 @@ Exact solution: $\quad u = \sin(2\pi x) \, \exp(-t)$
 \centering
 Clean data: just exact solution
 
-\includegraphics{images/heateq-cross-validation}
+\vspace{0.5cm}
+\includegraphics{images/heateq-cross_validation-clean}
+
+\uncover<2->{
+\begin{tikzpicture}[remember picture, overlay]
+\node[yshift=1.5cm, above] at (current page.center) (txt) {$\gamma^* \approx \num{1.36e-2}$};
+\draw [CRedD, ->, very thick] (txt) -- (1.2, 5.4);
+\end{tikzpicture}
+}
 \end{frame}
 
-\begin{frame}{Cross-validation for $\gamma$}
+\begin{frame}[label=current]{Cross-validation for $\gamma$, noisy observations}
 \centering
-Noisy data: $\quad u_{\text{obs}} = u +  N(0, \sigma^2), \quad \sigma=0.05 \sqrt{u}$
+Noisy data: $\quad u_{\text{obs}} = u +  N(0, \sigma^2), \quad \sigma=0.05u$
 
-\includegraphics{images/heateq-cross-validation-with-noise}
+\vspace{0.5cm}
+\includegraphics{images/heateq-cross_validation-noise}
+
+\uncover<2->{
+\begin{tikzpicture}[remember picture, overlay]
+\node[xshift=2.7cm,yshift=1.5cm, above] at (current page.center) (txt) {$\gamma^* \approx \num{1.36e-2}$};
+\draw [CRedD, ->, very thick] (txt) -- (4.3, 5.5);
+\end{tikzpicture}
+}
 \end{frame}
 
 
