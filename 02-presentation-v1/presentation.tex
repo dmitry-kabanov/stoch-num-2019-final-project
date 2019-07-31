@@ -276,10 +276,10 @@ optimal value through the $K$-fold cross-validation.
 \begin{frame}{Hyperparameter $\gamma$ is chosen via $K$-fold cross-validation}
 \begin{minipage}{\textwidth}
 \centering
-\begin{tikzpicture}[xscale=1.5, yscale=0.5, ultra thick]
-    \node [scale=1] at (0.45, 1.5) {Validation};
+\begin{tikzpicture}[xscale=1.5, yscale=0.5, very thick]
+    \node [scale=1] at (0.45, 1.6) {Validation};
     \draw [thick] (0.05, 1.05) -- (0.05, 1.15) -- (0.95, 1.15) -- (0.95, 1.05);
-    \node [scale=1] at (3.0, 1.5) {Train};
+    \node [scale=1] at (3.0, 1.6) {Train};
     \draw [thick] (1.05, 1.05) -- (1.05, 1.15) -- (4.95, 1.15) -- (4.95, 1.05);
 
     \node [scale=1] at (-0.7, 0.5) {$k = 1$};
@@ -324,18 +324,25 @@ optimal value through the $K$-fold cross-validation.
 %     \end{column}
 % \end{columns}
 \vspace{0.5cm}
-For given $\gamma$ in some range:\\
-\begin{enumerate}
-\item Split the data in $K = 5$ folds
-\item Repeat $K$ times:\
-    \begin{itemize}
-    \item train the neural network on ``white'' folds
-    \item compute prediction error on ``orange'' fold
-    \item average the results over all $K$ folds
-    \end{itemize}
-\end{enumerate}
+\begin{columns}
+    \begin{column}{0.3\textwidth}
+        For given $\gamma$ in some range:
+    \end{column}
+    \begin{column}{0.7\textwidth}
+        \begin{enumerate}
+        \item Split the data in $K = 5$ folds
+        \item Repeat $K$ times:\
+            \begin{itemize}
+            \item train the neural network on ``white'' folds
+            \item compute prediction error on ``orange'' fold
+            \end{itemize}
+        \item Average the errors over $K$ folds
+        \end{enumerate}
+    \end{column}
+\end{columns}
 
-Choose the result with the minimal averaged prediction error.
+\vspace{0.7cm}
+\textbf{In the end:} choose $\gamma$ with the minimal averaged prediction error.
 \end{frame}
 
 \begin{frame}{Bootstrapping parameters $\vec{\lambda}$}
