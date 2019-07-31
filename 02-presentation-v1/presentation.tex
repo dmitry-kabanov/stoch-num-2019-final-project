@@ -20,6 +20,11 @@
   \end{beamercolorbox}%
 }
 
+\usepackage[giveninits=true, style=verbose]{biblatex}
+\addbibresource{presentation.bib}
+
+\usepackage{siunitx}
+
 % Table packages.
 \usepackage{booktabs}
 
@@ -128,7 +133,7 @@ $\VLambda$ the vector of unknown parameters
 \begin{frame}
 
 The optimal $\VLambda$ found through
-maximization of the posterior distribution (Bayes' rule) \cite{sivia2006data}
+maximization of the posterior distribution (Bayes' rule) \footcite{sivia2006data}
 \begin{equation*}
     \rho( \VLambda | \Data ) \propto
     \rho( \Data | \VLambda ) \times \rho( \VLambda ).
@@ -157,7 +162,7 @@ optimization problem
 % solution
 Analytical solution of the optimization problem~\eqref{eq:optim-ideal} can be expensive, so 
 we replace  $u(x_i, t_i; \VLambda)$ with a 
-feedforward neural network \cite{goodfellow2016deep, raissi2017pinnII}.
+feedforward neural network \footcite{goodfellow2016deep, raissi2017pinnII}.
 
 To ensure that $\UNN( x, t; \VTheta)$
 is close to the exact solution of Eq.~\eqref{eq:pde}, we set the problem of estimating of the unknown parameters
@@ -615,7 +620,7 @@ Therefore, a key property of physics informed neural networks is that they can b
 \end{frame}
 
 
-\bibliography{presentation}
-\bibliographystyle{abbrv}
+%\bibliography{presentation}
+%\bibliographystyle{abbrv}
 
 \end{document}
