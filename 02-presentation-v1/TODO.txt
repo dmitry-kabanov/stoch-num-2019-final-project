@@ -1,0 +1,13 @@
+TODO List:
++ Constraint description
+- Computational complexity: PDE vs NN
+- Number of samples how to take enough
+- Logo on the title slide
+- Improve slide on neural network architecture
+- Slide describing optimization algorithm
+- Slide on Tensorflow and the need for it
+- Sync code local and cluster
++ Norms
++ Noise ~ to u, not to sqrt(u)
++ Regenerate predictions
++ Bibliography
