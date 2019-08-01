@@ -172,25 +172,27 @@ $\VLambda$:
 \begin{align*}
     &\argmin_{\VLambda, \VTheta} \quad \ \ 
         \sum_{i=1}^N \big[u_i - \UNN(x_i, t_i; \VTheta)\big]^2  \\
-    &\text{subject to } \ \ \UNN[\text{NN}, t]  + \NonlinOp(\UNN; \VLambda) = 0.
+    &\text{subject to } \ \ \UNN[\text{NN}, t]  + \NonlinOp(\UNN; \VLambda) \leq \epsilon
 \end{align*}
 \end{subequations}
+for some $\epsilon \ll 1$.
 
 \end{frame}
 
 % slide 5
 \begin{frame}
-It is difficult to satisfy Eq.~\eqref{eq:optim-final} exactly as
-$u_{\text{NN}}$ is an approximation of the exact solution of
-Eq.~\eqref{eq:pde}.
-Therefore, we relax the optimization problem introducing a NN
+We replace the previous optimization problem but converting hard constraint
+to a soft constraint.
+
+Introduce auxiliary function
 \begin{equation*}
     \FNN(x, t; \VLambda, \VTheta) =
         u_{\text{NN}, t} + \NonlinOp(u_{\text{NN}}; \VLambda),
 \end{equation*}
-where we plug the neural network $\UNN$ into Eq.~\eqref{eq:pde} and
-require that $\FNN \approx 0$.
+where we plug the neural network $\UNN$.
 
+\vspace{0.5cm}
+Clearly, we want $\FNN \approx 0$.
 As a result, we solve the minimization problem:
 \begin{equation*}
     \argmin_{\VLambda, \VTheta}
