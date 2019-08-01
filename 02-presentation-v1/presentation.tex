@@ -430,26 +430,41 @@ Noisy data: $\quad u_{\text{obs}} = u +  N(0, \sigma^2), \quad \sigma=0.05u$
 }
 \end{frame}
 
-
-\begin{frame}{Cross-validation for $\gamma$}
-    For given neural network, results are insensitive to the value of $\gamma$
-    for $\gamma$ less than $\approx 2$\\
-    At least for the present problem
-
+\begin{frame}{Uncertainty on $\widehat \lambda$ via bootstrap}
+\begin{itemize}
+    \item Both for clean and noisy data with corresponding optimal $\gamma$
+    \item Simulate distribution of $\widehat \lambda$ via 100 values
+    \item Detect and remove outliers via interquartile range method
+    \item Compute bootstrap percentile intervals
+\end{itemize}
 \end{frame}
 
-\begin{frame}{Bootstrap}
-Still computing... To be finished
-\end{frame}
-
-\begin{frame}{Preliminary results with $\gamma=2$}
-Training the network with $\gamma=2$ gives prediction $\widehat{\lambda} =
-1.00175$ with error $\approx 0.18 \,\%$.
-
-\vspace{0.5cm}
+\begin{frame}{Uncertainty on $\widehat \lambda$ via bootstrap, clean data}
 \centering
-\includegraphics[scale=0.55]{images/heateq-predictions}
+Clean data: just exact solution\\
+Mean $\widehat \lambda \approx 1.0005$
 
+\vspace{0.1cm}
+\includegraphics{images/heateq-bootstrap-clean}
+\end{frame}
+
+\begin{frame}{Uncertainty on $\widehat \lambda$ via bootstrap, noisy data}
+\centering
+Noisy data: $\quad u_{\text{obs}} = u +  N(0, \sigma^2), \quad \sigma=0.05u$\\
+Mean $\widehat \lambda \approx 1.0052$ {\color{CRedD} (10x larger error than for clean data)}
+
+\vspace{0.1cm}
+\includegraphics{images/heateq-bootstrap-noise}
+\end{frame}
+
+\begin{frame}{Predictions, clean data}
+\centering
+\includegraphics{images/heateq-predictions-clean}
+\end{frame}
+
+\begin{frame}{Predictions, noisy data}
+\centering
+\includegraphics{images/heateq-predictions-noise}
 \end{frame}
 
 % Heat equation part (end)
