@@ -54,7 +54,14 @@ where $\beta = 1 / (2 \sigma_\varepsilon ^ 2 ), \sigma_\varepsilon ^2$ is the va
 \begin{equation}
     Z_D(\beta) = (2 \pi \sigma_\varepsilon ^2)^{N / 2} = (\pi / \beta)^{N / 2}
 \end{equation}
-The maximum likelihood method selects the weights so as to maximize the likelihood function, which in this Gaussian case is the same as minimizing the squared error $E_D$ . Therefore, our standard sum squared error performance index can be derived statistically with the assumption of Gaussian noise in the training set, and our standard choice for the weights is the maximum likelihood estimate.
+The maximum likelihood method selects the weights so as
+to maximize the likelihood function, which in this
+Gaussian case is the same as minimizing the squared
+error $E_D$ . Therefore, our standard sum squared error
+performance index can be derived statistically with the
+assumption of Gaussian noise in the training set, and
+our standard choice for the weights is the maximum
+likelihood estimate.
 
 With the assumption that the weights are small values centered around zero, we can select a zero-mean Gaussian \textit{prior density}:
 \begin{equation}
