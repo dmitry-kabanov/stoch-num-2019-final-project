@@ -203,9 +203,22 @@ here $\gamma$ is a regularization hyperparameter that is chosen via cross-valida
     
 \end{frame}
 
+\begin{frame}{Porblem optimization}
+    
+As an optimization algorithm, we use Limited-memory
+Broyden-Fletcher-Goldfarb-Shanno (BFGS) algorithm. \\
+It is one of the quasi-Newtone methods that approximate the Hessian
+matrix instead of it's computation. \\
+In this method, from initial
+guess $\vec{x_0}$, and an approximate matrix $\vec{B_0}$ we are
+lookoing for the direction of optimization and iteratively
+approximate $B$ until convergence.
+    
+\end{frame}
+
 %slide 6
 \begin{frame}{Description of neural networks}
-    
+\small    
 Let us recall the neural network equation:
 $$
 \UNN(x, t; \vec{\theta}) = g_L \circ g_{L-1} \circ \dots \circ g_1,
@@ -365,7 +378,14 @@ optimal value through the $K$-fold cross-validation.
 
 \begin{frame}{Tensorflow}
 
-    Neural network is a graph of variables and a mathematical operations. And Tensorflow is a package that allows us to create such a graph and make computations. Therefore, in this work, we 
+    Neural network is a graph of variables and a mathematical operations. And Tensorflow is a package that allows us to set mathematical operations as an element of a graph and to make computations over the variables that are also a part of the graph. 
+    
+    \includegraphics[scale = 0.4]{02-presentation-v1/images/graph-example.png}
+    
+\end{frame}
+
+\begin{frame}
+    Therefore, in this work, using Tensorflow, we 
     \begin{enumerate}
         \item Set mathematical operations and placeholders for variables,
         \item set configurations of a graph as a neural network,
@@ -555,7 +575,7 @@ Cross-validation result for the hyperparameter $\gamma = 0.0255$.
 
 \begin{frame}
 
-Parameter $\gamma$ for noisy data: $u_{obs} = u + N(0, \sigma^2),$ $\sigma = 0.05\sqrt{u}.$ 
+Parameter $\gamma$ for noisy data: $u_{obs} = u + N(0, \sigma^2),$ $\sigma = 0.05 u.$ 
 
 \centering
 \includegraphics[width=11cm, height=7cm]{images/burgers-cross_val_gamma_noisy.png}\\
@@ -575,7 +595,7 @@ Comparison between the exact and the predicted solutions at the different time i
 \end{frame}
 
 \begin{frame}{Noisy data results}
-Comparison between the exact and the predicted solutions for the noisy data. $u_{obs} = u + N(0, \sigma^2),$ $\sigma = 0.05\sqrt{u}.$ \\
+Comparison between the exact and the predicted solutions for the noisy data. $u_{obs} = u + N(0, \sigma^2),$ $\sigma = 0.05 u.$ \\
 
 \centering
 \includegraphics[scale = 0.43]{02-presentation-v1/images/burgers-exact-pred-noisy.png}
