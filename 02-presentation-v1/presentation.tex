@@ -250,9 +250,9 @@ PDE problem must be computed on a grid, which includes observation points as a s
 \begin{frame}{Neural network rough computational complexity}
     Let us denote $n^{(k)}$ the number of neurons in the $k$th layer, $L$ as the number of layers. Then the number of multiplications of weights is: $$n_{mul} = \sum_{k=2}^{L} n^{(k)}n^{(k-1)}n^{(k-2)} + n^{(1)}n^{(0)}*2.$$
     The number of activation function use is: $$n_g = \sum_{k = 1}^{L} n^{(k)}.$$     
-    Then, we assume that matrices are quadratic and there the same number of neurons, and $L = n$:
-    $$n_{mul} = L*n^3 = n^4, ~ n_g = L*n = n^2.$$
-    Therefore, $ \text{ the computational complexity is } = n_{mul} + n_g = O(n^4) + O(n^2) \Longleftrightarrow O(n^4).$ 
+    Then, we assume that matrices are quadratic and there the same number of neurons, and $L \sim n$:
+    $$n_{mul} = L*n^3 \sim n^4, ~ n_g = L*n \sim n^2.$$
+    Therefore, $ \text{ the computational complexity is: }  n_{mul} + n_g \sim O(n^4) + O(n^2) \Longleftrightarrow O(n^4).$ 
 \end{frame}
 
 \begin{frame}{Hyperparameter $\gamma$ is chosen via $K$-fold cross-validation}
@@ -348,7 +348,7 @@ optimal value through the $K$-fold cross-validation.
     \end{column}
 \end{columns}
 
-\vspace{0.7cm}
+\vspace{0.4cm}
 \textbf{In the end:} choose $\gamma$ with the minimal averaged prediction error.
 \end{frame}
 
@@ -361,6 +361,16 @@ optimal value through the $K$-fold cross-validation.
     \quad - Store the resulting $\vec{\lambda}$.\\
     \vspace{0.5cm}
     Results of bootstrap are given below for each problem.
+\end{frame}
+
+\begin{frame}{Tensorflow}
+
+    Neural network is a graph of variables and a mathematical operations. And Tensorflow is a package that allows us to create such a graph and make computations. Therefore, in this work, we 
+    \begin{enumerate}
+        \item Set mathematical operations and placeholders for variables,
+        \item set configurations of a graph as a neural network,
+        \item process the computation.
+    \end{enumerate}
 \end{frame}
 
 % Common part (end)
@@ -496,11 +506,28 @@ $$u(t, x) = \frac{\pi \lambda_2}{\pi \lambda_2 e^{\{\pi^2 \lambda_2 t\}} - (e^{\
 
 \end{frame}
 
+%\begin{frame}{Burgers' equation neural network configuration}
+%    For this problem 3200 observations were used. The optimal
+%number of them is: $2*M^2$, where $M$ is the number of model
+%parameters. As we have 4 hidden layers with 10 neurons in each.
+%This number basically affects the underfitting and overfitting
+%of the neural network. \\
+
+%    
+%    The computational complexity according to the configuration
+%of an NN consists of the number of matrix multiplications and
+%the amount of the activation function use. 
+    
+%\end{frame}
 \begin{frame}{Burgers' equation neural network configuration}
-    For this problem 3200 observations were used. The optimal number of them is: $2*M^2$, where $M$ is the number of model parameters. As we have 4 hidden layers with 10 neurons in each. This number basically affects the underfitting and overfitting of the neural network. \\
-    
-    The computational complexity according to the configuration of an NN consists of the number of matrix multiplications and the amount of the activation function use. 
-    
+\begin{enumerate}
+    \item The following network configuration was used:\\
+$[2, 10, 10, 10, 10, 1]$.
+    \item The number of the parameters in $\boldsymbol{\theta}$ is: \\
+$2*10 + (10*10 + 10)*3 + 10*1 + 1 = 370$\\
+    \item $3700$ observatons were used.
+\end{enumerate}
+
 \end{frame}
 
 \begin{frame}{Observations}
@@ -518,67 +545,72 @@ Below, the exact solution is depicted on the uniform grid with 201 points in $x$
 \begin{frame}
 
 Hyperparameter $\gamma$ for the optimization problem was computed via cross-validation technique, using 5 folds. 
-\begin{figure}
-    \centering
-    \includegraphics[width=11cm, height=6cm]{images/burgers-cross_val_gamma.png}
-    \caption{Cross-validation result for the hyperparameter $\gamma = 0.0255$.}
-    \label{fig:cross_val_gamma}
-\end{figure}
+
+\centering
+\includegraphics[width=11cm, height=7cm]{images/burgers-cross_val_gamma.png}
+
+Cross-validation result for the hyperparameter $\gamma = 0.0255$.
 
 \end{frame}
 
 \begin{frame}
 
-Hyperparameter $\gamma$ for noisy data: $u_{obs} = u + N(0, \sigma^2),$ $\sigma = 0.05\sqrt{u}.$ 
+Parameter $\gamma$ for noisy data: $u_{obs} = u + N(0, \sigma^2),$ $\sigma = 0.05\sqrt{u}.$ 
 
-\begin{figure}
-    \centering
-    \includegraphics[width=11cm, height=6cm]{images/burgers-cross_val_gamma_noisy.png}
-    \caption{Cross-validation result for the hyperparameter $\gamma = 0.0255$ on the noisy data.}
-    \label{fig:cross_val_gamma_noisy}
-\end{figure}
-    
+\centering
+\includegraphics[width=11cm, height=7cm]{images/burgers-cross_val_gamma_noisy.png}\\
+
+Cross-validation result for the hyperparameter $\gamma = 0.0255$ on the noisy data.
+
 \end{frame}
 
-\begin{frame}{Results with $\gamma=0.02553$}
-Below, we present a comparison between the exact and the predicted solutions at the different time instants t = 0.25, 0.50, 0.75. Training the network with $\gamma=0.0255$ gives prediction $\lambda_1 =
+\begin{frame}{Clean data results $\gamma=0.02553$}
+Comparison between the exact and the predicted solutions at the different time instants t = 0.25, 0.50, 0.75. Training the network with $\gamma=0.0255$ gives prediction $\lambda_1 =
 0.986564, ~ \lambda_2 = 0.00338$ with MSE $u(x, t) \approx 0.011 \,\%$.
 
-\begin{figure}
-    \centering
-    \includegraphics[scale=0.43]{images/burgers-exact-predict.png}
-    \caption{The exact and predicted solutions of Burgers' equation in time.}
-    \label{fig:burgers-exact-predict}
-\end{figure}
+\centering
+\includegraphics[scale=0.43]{images/burgers-exact-predict.png}
+
+
+\end{frame}
+
+\begin{frame}{Noisy data results}
+Comparison between the exact and the predicted solutions for the noisy data. $u_{obs} = u + N(0, \sigma^2),$ $\sigma = 0.05\sqrt{u}.$ \\
+
+\centering
+\includegraphics[scale = 0.43]{02-presentation-v1/images/burgers-exact-pred-noisy.png}
+
+Solution error $\frac{||U_{pred} - U_{true}||_2}{||U_{true}||_2}$ is: 47\%
+
 
 \end{frame}
 
 \begin{frame}{}
 
 We have got the following bootstrapped results:
-\begin{figure}
+
 \centering
 \includegraphics[width = 9cm , height = 7cm]{images/burgers-bootstraped_l1.png}
-\caption{Bootstrapped parameter $\lambda_1$ for Burgers' equation.}
-\end{figure}
+
+Bootstrapped parameter $\lambda_1$ for Burgers' equation.
 
 \end{frame}
 
 \begin{frame}
 
-\begin{figure}
-    \centering
-    \includegraphics[width = 10cm , height = 8cm]{images/burgers-bootstraped_l2.png}
-    \caption{Bootstrapped parameter $\lambda_2$ for Burgers' equation.}
-    \label{fig:bootstraped_l2}
-\end{figure}
-    
-    
+\centering
+\includegraphics[width = 10cm , height = 8cm]{images/burgers-bootstraped_l2.png}
+
+Bootstrapped parameter $\lambda_2$ for Burgers' equation.
+
 \end{frame}
 
 \begin{frame}{Neural Network configuration vs $\lambda$ error}
 
-Below one can see the \% error in $\lambda_1$ and $\lambda_2$ for different neural network configurations. In the first column the number of the hidden layers is presented, in the second row the number of the neurons in each hidden layer is presented.
+Below one can see the \% error in $\lambda_1$ and $\lambda_2$ for
+different neural network configurations. In the first column the
+number of the hidden layers is presented, in the second row the
+number of the neurons in each hidden layer is presented.
 
 \begin{tabular}{lccc|ccc}
     \toprule
