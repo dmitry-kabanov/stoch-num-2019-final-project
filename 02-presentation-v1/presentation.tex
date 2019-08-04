@@ -203,17 +203,14 @@ here $\gamma$ is a regularization hyperparameter that is chosen via cross-valida
     
 \end{frame}
 
-\begin{frame}{Porblem optimization}
-    
-As an optimization algorithm, we use Limited-memory
-Broyden-Fletcher-Goldfarb-Shanno (BFGS) algorithm. \\
-It is one of the quasi-Newtone methods that approximate the Hessian
-matrix instead of it's computation. \\
-In this method, from initial
-guess $\vec{x_0}$, and an approximate matrix $\vec{B_0}$ we are
-lookoing for the direction of optimization and iteratively
-approximate $B$ until convergence.
-    
+\begin{frame}{Solving optimization problems}
+\begin{itemize}
+    \item Optimization problem (i.\ e., network training) is done via Limited-memory
+Broyden-Fletcher-Goldfarb-Shanno (L-BFGS) algorithm.
+
+    \item Quasi-Newton algorithm that approximates the Hessian matrix of the objective
+function to obtain second-order convergence
+\end{itemize}
 \end{frame}
 
 %slide 6
@@ -376,22 +373,19 @@ optimal value through the $K$-fold cross-validation.
     Results of bootstrap are given below for each problem.
 \end{frame}
 
-\begin{frame}{Tensorflow}
-
-    Neural network is a graph of variables and a mathematical operations. And Tensorflow is a package that allows us to set mathematical operations as an element of a graph and to make computations over the variables that are also a part of the graph. 
+\begin{frame}{We use Tensorflow for all computations}
+\begin{itemize}
+    \item You specify functions as computational graphs
+    \item It allows to compute derivatives automatically
+    \item Can compute on videocards (it is faster than usual
+          processors)
+    \item Very useful for neural networks
+\end{itemize}
     
-    \includegraphics[scale = 0.4]{02-presentation-v1/images/graph-example.png}
-    
+\centering
+\includegraphics[scale = 0.2]{02-presentation-v1/images/graph-example.png}
 \end{frame}
 
-\begin{frame}
-    Therefore, in this work, using Tensorflow, we 
-    \begin{enumerate}
-        \item Set mathematical operations and placeholders for variables,
-        \item set configurations of a graph as a neural network,
-        \item process the computation.
-    \end{enumerate}
-\end{frame}
 
 % Common part (end)
 % ------------------------------------------------------------------------------
@@ -575,7 +569,7 @@ Cross-validation result for the hyperparameter $\gamma = 0.0255$.
 
 \begin{frame}
 
-Parameter $\gamma$ for noisy data: $u_{obs} = u + N(0, \sigma^2),$ $\sigma = 0.05 u.$ 
+Parameter $\gamma$ for noisy data: $u_{obs} = u + N(0, \sigma^2),$
 
 \centering
 \includegraphics[width=11cm, height=7cm]{images/burgers-cross_val_gamma_noisy.png}\\
@@ -595,7 +589,7 @@ Comparison between the exact and the predicted solutions at the different time i
 \end{frame}
 
 \begin{frame}{Noisy data results}
-Comparison between the exact and the predicted solutions for the noisy data. $u_{obs} = u + N(0, \sigma^2),$ $\sigma = 0.05 u.$ \\
+Comparison between the exact and the predicted solutions for the noisy data. $u_{obs} = u + N(0, \sigma^2),$ \\
 
 \centering
 \includegraphics[scale = 0.43]{02-presentation-v1/images/burgers-exact-pred-noisy.png}
