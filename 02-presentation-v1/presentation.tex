@@ -556,14 +556,12 @@ Below, the exact solution is depicted on the uniform grid with 201 points in $x$
 \end{frame}
 
 \begin{frame}
-
 Hyperparameter $\gamma$ for the optimization problem was computed via cross-validation technique, using 5 folds. 
 
 \centering
-\includegraphics[width=11cm, height=7cm]{images/burgers-cross_val_gamma.png}
+\includegraphics[width=10.5cm, height=7cm]{images/burgers-cross_val_gamma.png}
 
 Cross-validation result for the hyperparameter $\gamma = 0.0255$.
-
 \end{frame}
 
 \begin{frame}
@@ -571,7 +569,7 @@ Cross-validation result for the hyperparameter $\gamma = 0.0255$.
 Parameter $\gamma$ for noisy data: $u_{obs} = u + N(0, \sigma^2),$
 
 \centering
-\includegraphics[width=11cm, height=7cm]{images/burgers-cross_val_gamma_noisy.png}\\
+\includegraphics[width=10.5cm, height=7cm]{images/burgers-cross_val_gamma_noisy.png}\\
 
 Cross-validation result for the hyperparameter $\gamma = 0.0255$ on the noisy data.
 
@@ -582,40 +580,38 @@ Comparison between the exact and the predicted solutions at the different time i
 0.986564, ~ \lambda_2 = 0.00338$ with MSE $u(x, t) \approx 0.011 \,\%$.
 
 \centering
-\includegraphics[scale=0.43]{images/burgers-exact-predict.png}
+\includegraphics[scale=0.415]{images/burgers-exact-predict.png}
 
 
 \end{frame}
 
 \begin{frame}{Noisy data results}
-Comparison between the exact and the predicted solutions for the noisy data. $u_{obs} = u + N(0, \sigma^2),$ \\
+Comparison between the exact and the predicted solutions for the noisy data.
+\[
+    u_{\textrm{obs}} = u + N(0, \sigma^2)
+\]
 
+\vspace{0.3cm}
 \centering
-\includegraphics[scale = 0.43]{images/burgers-exact-pred-noisy.png}
+\includegraphics[scale = 0.41]{images/burgers-exact-pred-noisy.png}
 
 Solution error $\frac{||U_{pred} - U_{true}||_2}{||U_{true}||_2}$ is 0.049.
-
-
 \end{frame}
 
 \begin{frame}{}
-
 We have got the following bootstrapped results:
 
 \centering
 \includegraphics[width = 9cm , height = 7cm]{images/burgers-bootstraped_l1.png}
 
 Bootstrapped parameter $\lambda_1$ for Burgers' equation.
-
 \end{frame}
 
 \begin{frame}
-
 \centering
 \includegraphics[width = 10cm , height = 8cm]{images/burgers-bootstraped_l2.png}
 
 Bootstrapped parameter $\lambda_2$ for Burgers' equation.
-
 \end{frame}
 
 \begin{frame}{Neural Network configuration vs $\lambda$ error}
