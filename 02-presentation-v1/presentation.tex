@@ -676,10 +676,17 @@ Below one can see the \% error in solution for different neural network configur
 % Burgers' equation (end)
 % ------------------------------------------------------------------------------
 
-\begin{frame}
-    \frametitle{Conclusions}
+\begin{frame}{Conclusions}
     
-Therefore, a key property of physics informed neural networks is that they can be effectively trained using small data sets; a setting often encountered in the study of physical systems for which the cost of data acquisition may be prohibitive.
+\begin{itemize}
+    \setlength\itemsep{0.75em}
+    \item We apply neural networks to problem of parameter estimation.
+    \item Adding physical constraint leads to efficient network training.
+    \item Due to physical constraint, small number of observations works (small
+          from neural-network point of view).
+    \item Accurate estimates are reached with clean and noisy data.
+    \item Parameter distributions look similar to normal distribution.
+\end{itemize}
 
 \end{frame}
 
