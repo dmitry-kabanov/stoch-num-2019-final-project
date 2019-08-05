@@ -359,15 +359,16 @@ optimal value through the $K$-fold cross-validation.
 \textbf{In the end:} choose $\gamma$ with the minimal averaged prediction error.
 \end{frame}
 
-\begin{frame}{Bootstrapping parameters $\vec{\lambda}$}
-    In this work, model parameter $\vec{\lambda}$ is estimated using bootstrap technique:\\
-    \vspace{0.5cm}
-    \quad - Set training and test data.\\
-    Repeat for a several times $T$ the following steps:\\
-    \quad - Choose 80\% of the sample data and use it for training and testing the model. \\
-    \quad - Store the resulting $\vec{\lambda}$.\\
-    \vspace{0.5cm}
-    Results of bootstrap are given below for each problem.
+\begin{frame}{Estimate uncertainty of $\VLambda$ via bootstrap}
+\begin{itemize}
+    \setlength\itemsep{1em}
+    \item After estimating model parameter $\VLambda$, we approximate uncertainty of
+$\vec{\lambda}$ via bootstrap technique.
+    \item By sampling from observations with replacement multiple times, we estimate
+the distribution of $\VLambda$ and 95\,\% percentile confidence interval.
+    \item We use sample of size $0.8N$
+    \item We sample 100 times
+\end{itemize}
 \end{frame}
 
 \begin{frame}{We use Tensorflow for all computations}
