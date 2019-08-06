@@ -256,9 +256,9 @@ PDE problem must be computed on a grid, which includes observation points as a s
 \end{frame}
 
 \begin{frame}{Neural network rough computational complexity}
-    Let us denote $n^{(k)}$ the number of neurons in the $k$th layer, $L$ as the number of layers. Then the number of multiplications of weights is: $$n_{mul} = \sum_{k=1}^{L} n^{3(k)} + n^{(1)}n^{(0)}*1.$$
+    Let us denote $n^{(k)}$ the number of neurons in the $k$th layer, $L$ as the number of layers. Then the number of multiplications of weights is: $$n_{mul} = \sum_{k=1}^{L} n^{(k)} n^{(k-1)} n^{(k-2)} + n^{(1)}n^{(0)}*1.$$
     The number of activation function use is: $$n_g = \sum_{k = 1}^{L} n^{(k)}.$$     
-    Then, we assume that matrices are quadratic and there the same number of neurons, and $L \sim n$:
+    Then, we assume that weight matrices are square (the number of neurons is the same in each layer), and $L \sim n$:
     $$n_{mul} = L*n^3 \sim n^4, ~ n_g = L*n \sim n^2.$$
     Therefore, $ \text{ the computational complexity is: }  n_{mul} + n_g \sim O(n^4) + O(n^2) \Longleftrightarrow O(n^4).$ 
 \end{frame}
