@@ -209,7 +209,7 @@ where $\gamma$ is a regularization hyperparameter that is chosen via cross-valid
 \begin{frame}{Solving optimization problems}
 \begin{itemize}
     \item Optimization problem (i.\ e., network training) is done via Limited-memory
-Broyden-Fletcher-Goldfarb-Shanno (L-BFGS) algorithm.
+Broyden--Fletcher--Goldfarb--Shanno (L-BFGS) algorithm.
 
     \item Quasi-Newton algorithm that approximates the Hessian matrix of the objective
 function to obtain second-order convergence
@@ -244,7 +244,8 @@ $\ell$\textsuperscript{th} layer.
 
 % slide 7
 \begin{frame}
-The general scheme of the feedforward NN (aka multilayer perceptron, a.k.a. fully connected NN) that we use:
+The general scheme of the feedforward NN (a.k.a. multilayer perceptron,
+a.k.a. fully connected NN) that we use:
 
 \vspace{0.5cm}
 \centering
@@ -258,10 +259,10 @@ PDE problem must be computed on a grid, which includes observation points as a s
 \end{frame}
 
 \begin{frame}{Neural network rough computational complexity}
-    Let us denote $n^{(k)}$ the number of neurons in the $k$th layer, $L$ as the number of layers. Then the number of multiplications of weights is: $$n_{mul} = \sum_{k=1}^{L} n^{(k)} n^{(k-1)} n^{(k-2)} + n^{(1)}n^{(0)}*1.$$
+    Let us denote $n^{(k)}$ the number of neurons in the $k$th layer, $L$ as the number of layers. Then the number of multiplications of weights is: $$n_{mul} = \sum_{k=1}^{L} n^{(k)} n^{(k-1)} n^{(k-2)} + n^{(1)}n^{(0)}.$$
     The number of activation function use is: $$n_g = \sum_{k = 1}^{L} n^{(k)}.$$     
     Then, we assume that weight matrices are square (the number of neurons is the same in each layer), and $L \sim n$:
-    $$n_{mul} = L*n^3 \sim n^4, ~ n_g = L*n \sim n^2.$$
+    $$n_{mul} = Ln^3 \sim n^4, \quad n_g = Ln \sim n^2.$$
     Therefore, $ \text{ the computational complexity is: }  n_{mul} + n_g \sim O(n^4) + O(n^2) \Longleftrightarrow O(n^4).$ 
 \end{frame}
 
