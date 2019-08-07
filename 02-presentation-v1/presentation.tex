@@ -5,6 +5,7 @@
 \usepackage[default]{lato}
 \usepackage{mathpazo}
 \usepackage{textcomp}
+\usepackage{mathtools}
 \usefonttheme{professionalfonts}
 \usefonttheme[onlymath]{serif}
 
@@ -83,6 +84,7 @@
 \newcommand{\UNN}[1][\text{NN}]{u_{#1}}
 \newcommand{\FNN}[1][\text{NN}]{f_{#1}}
 \newcommand{\NonlinOp}{\mathcal N\!}
+\DeclarePairedDelimiter\norm{\lVert}{\rVert}
 % Useful mathematical macros (end)
 % ------------------------------------------------------------------------------
 
@@ -170,37 +172,37 @@ is close to the exact solution of Eq.~\eqref{eq:pde}, we set the problem of esti
 $\VLambda$:
 \begin{subequations}
 \label{eq:optim-final}
-\begin{align*}
-    &\argmin_{\VLambda, \VTheta} \quad \ \ 
+\begin{alignat}{3}
+    &\argmin_{\VLambda, \VTheta} & \quad &
         \sum_{i=1}^N \big[u_i - \UNN(x_i, t_i; \VTheta)\big]^2  \\
-    &\text{subject to } \ \ \UNN[\text{NN}, t]  + \NonlinOp(\UNN; \VLambda) \leq \epsilon
-\end{align*}
+    &\text{subject to } & &
+        \norm{\UNN[\text{NN}, t]  + \NonlinOp(\UNN; \VLambda)} \leq \epsilon
+\end{alignat}
 \end{subequations}
 for some $\epsilon \ll 1$.
-
 \end{frame}
 
 % slide 5
-\begin{frame}
-We replace the previous optimization problem but converting hard constraint
-to a soft constraint.
-
-Introduce auxiliary function
+\begin{frame}{From constrained to unconstrained optimization problem}
+1. Introduce auxiliary function
 \begin{equation*}
     \FNN(x, t; \VLambda, \VTheta) =
         u_{\text{NN}, t} + \NonlinOp(u_{\text{NN}}; \VLambda),
 \end{equation*}
 where we plug the neural network $\UNN$.
 
+
 \vspace{0.5cm}
-Clearly, we want $\FNN \approx 0$.
-As a result, we solve the minimization problem:
+2. Clearly, we want $\norm{\FNN} \approx 0$ for all $(x, t)$.\\
+Relax it: \emph{not for all} $(x, t)$ but only at the observation points.\\
+As a result, we replace constrained problem with unconstrained problem via
+Lagrangian relaxation
 \begin{equation*}
     \argmin_{\VLambda, \VTheta}
     \sum_{i=1}^N \big[ u_i - \UNN(x_i, t_i; \VTheta)\big ]^2
     +\gamma \sum_{i=1}^N \big[ \FNN(x_i, t_i; \VLambda, \VTheta) \big]^2,
 \end{equation*}
-here $\gamma$ is a regularization hyperparameter that is chosen via cross-validation.
+where $\gamma$ is a regularization hyperparameter that is chosen via cross-validation.
     
 \end{frame}
 
