@@ -257,6 +257,6 @@ pyDOE-master/
 
 # Ignore submitted versions and comments.
 01-scope/versions
-02-presentation-v1/versions
+02-presentation/versions
 code-heateq/_output-*/
 __pycache__/
