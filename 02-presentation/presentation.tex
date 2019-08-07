@@ -176,7 +176,7 @@ $\VLambda$:
     &\argmin_{\VLambda, \VTheta} & \quad &
         \sum_{i=1}^N \big[u_i - \UNN(x_i, t_i; \VTheta)\big]^2  \\
     &\text{subject to } & &
-        \norm{\UNN[\text{NN}, t]  + \NonlinOp(\UNN; \VLambda)} \leq \epsilon
+        \norm{\UNN[\text{NN}, t]  + \NonlinOp(\UNN; \VLambda)}_{L_2} \leq \epsilon
 \end{alignat}
 \end{subequations}
 for some $\epsilon \ll 1$.
@@ -193,14 +193,14 @@ where we plug the neural network $\UNN$.
 
 
 \vspace{0.5cm}
-2. Clearly, we want $\norm{\FNN} \approx 0$ for all $(x, t)$.\\
-Relax it: \emph{not for all} $(x, t)$ but only at the observation points.\\
-As a result, we replace constrained problem with unconstrained problem via
+2. Clearly, we want $\norm{\FNN}_{L_2} \approx 0$ but 
+we relax the condition: go from continuous to discrete norm.\\
+As a result, constrained problem is replaced with unconstrained problem via
 Lagrangian relaxation
 \begin{equation*}
-    \argmin_{\VLambda, \VTheta}
+    \argmin_{\alert{\VLambda}, \VTheta}
     \sum_{i=1}^N \big[ u_i - \UNN(x_i, t_i; \VTheta)\big ]^2
-    +\gamma \sum_{i=1}^N \big[ \FNN(x_i, t_i; \VLambda, \VTheta) \big]^2,
+    +\gamma \sum_{i=1}^N \big[ \FNN(x_i, t_i; \alert{\VLambda}, \VTheta) \big]^2,
 \end{equation*}
 where $\gamma$ is a regularization hyperparameter that is chosen via cross-validation.
     
